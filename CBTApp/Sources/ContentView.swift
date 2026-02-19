@@ -1,5 +1,6 @@
 import SwiftUI
 import Domain
+import DesignSystem
 import Utilities
 
 struct ContentView: View {
@@ -8,6 +9,12 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section("Design System") {
+                    NavigationLink("Component Catalogue") {
+                        ComponentCatalogueView()
+                    }
+                }
+
                 Section("Sample Protocols") {
                     ForEach(SampleData.allProtocols) { proto in
                         NavigationLink {
