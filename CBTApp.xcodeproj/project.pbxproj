@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -45,7 +45,7 @@
 		E11F21D36E186D35B798E697 /* Utilities */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Utilities; path = Packages/Utilities; sourceTree = SOURCE_ROOT; };
 		E37869F06042DF00E94F5FBE /* CBTAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBTAppTests.swift; sourceTree = "<group>"; };
 		E539BE02227D5C78D271B312 /* Domain */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Domain; path = Packages/Domain; sourceTree = SOURCE_ROOT; };
-		F8E805CC7BC8B810A8FCC5FC /* CBTApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CBTApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8E805CC7BC8B810A8FCC5FC /* CBTApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBTApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,7 +207,6 @@
 				F9FB48394316DDC5EF1932CA /* XCLocalSwiftPackageReference "Packages/Services" */,
 				FAEE5A6AF838352C2F17BAE2 /* XCLocalSwiftPackageReference "Packages/Utilities" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -308,6 +307,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5R2D4Y969H;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CBT;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -434,6 +434,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5R2D4Y969H;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CBT;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
