@@ -57,6 +57,27 @@
 - All manual tests passed (TC-01 through TC-09)
 - Committed on `phase-4/protocol-engine`
 
+### Phase 5: Run Mode — IN PROGRESS
+- RunFlowStep enum (Domain) — 6 navigation cases
+- RunSummary (Domain) — pure function generating human-readable summary text
+- RunFlowViewModel (@Observable @MainActor) — single VM driving all 6 screens:
+  - Protocol selection with search filtering
+  - Capture: situation, hot thought, emotions (chip + slider), body signals, urge, belief strength
+  - Guided discovery: prediction + alternative response
+  - Intervention: JITAI-driven recommendation, timer, checklist, switch intervention
+  - Outcome: re-rate emotions, belief strength, outcome tags, learning note, forward plan
+  - Summary: generated text + thumbs up/down helpfulness rating
+- 6 screen views using DesignSystem components (ProtocolCard, ScriptCard, CBTSlider, etc.)
+- RunFlowCoordinator: NavigationStack with enum-based path
+- ContentView: "Start a Run" entry point via full-screen cover
+- Save on each screen transition (Run starts .abandoned, set to .completed at finish)
+- Skip paths: skip capture, skip guided discovery
+- 29 new automated tests (7 RunSummary + 22 RunFlowViewModel)
+  - Domain: 108 total (101 existing + 7 new)
+  - Features: 23 total (22 new + 1 existing)
+- Manual test brief: `docs/manual-tests/phase-5-run-mode.md` (8 test cases)
+- Awaiting manual testing
+
 ## Git State
 - `main` branch: Phase 0 only
 - `phase-1/domain-models`: Phase 0 + 1

@@ -50,7 +50,7 @@ public enum InterventionLibrary {
             "Re-rate your belief strength"
         ],
         exampleScripts: [
-            "You predicted that {{hotThought}}. Let's test this — what would you need to do to find out if this is actually true?",
+            "You predicted that {{prediction}}. Let's test this — what would you need to do to find out if this is actually true?",
             "Before we test this, write down exactly what you think will happen. Be as specific as you can — this helps us compare later."
         ],
         durationEstimate: 600,

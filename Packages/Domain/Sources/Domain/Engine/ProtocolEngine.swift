@@ -56,6 +56,7 @@ public struct ProtocolEngine: Sendable {
         // Parameterise the template
         let context = InterventionParameteriser.Context(
             hotThought: state.capturedHotThought,
+            prediction: state.capturedPrediction,
             targetBelief: cbtProtocol.targets.targetBelief,
             targetSituation: state.capturedSituation,
             urgeBehaviour: state.capturedUrge?.displayName

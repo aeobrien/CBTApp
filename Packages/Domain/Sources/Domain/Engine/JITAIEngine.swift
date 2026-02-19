@@ -7,6 +7,7 @@ public struct JITAIState: Sendable {
     public var lastRunIntensity: Double?
     public var capturedIntensity: Double?
     public var capturedHotThought: String?
+    public var capturedPrediction: String?
     public var capturedSituation: String?
     public var capturedUrge: UrgeType?
     public var hasActiveExperiment: Bool
@@ -19,6 +20,7 @@ public struct JITAIState: Sendable {
         lastRunIntensity: Double? = nil,
         capturedIntensity: Double? = nil,
         capturedHotThought: String? = nil,
+        capturedPrediction: String? = nil,
         capturedSituation: String? = nil,
         capturedUrge: UrgeType? = nil,
         hasActiveExperiment: Bool = false,
@@ -30,6 +32,7 @@ public struct JITAIState: Sendable {
         self.lastRunIntensity = lastRunIntensity
         self.capturedIntensity = capturedIntensity
         self.capturedHotThought = capturedHotThought
+        self.capturedPrediction = capturedPrediction
         self.capturedSituation = capturedSituation
         self.capturedUrge = capturedUrge
         self.hasActiveExperiment = hasActiveExperiment

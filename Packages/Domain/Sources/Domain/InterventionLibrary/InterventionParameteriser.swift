@@ -10,17 +10,20 @@ public enum InterventionParameteriser {
     /// Context provided by the user/run for parameterisation.
     public struct Context: Sendable {
         public var hotThought: String?
+        public var prediction: String?
         public var targetBelief: String?
         public var targetSituation: String?
         public var urgeBehaviour: String?
 
         public init(
             hotThought: String? = nil,
+            prediction: String? = nil,
             targetBelief: String? = nil,
             targetSituation: String? = nil,
             urgeBehaviour: String? = nil
         ) {
             self.hotThought = hotThought
+            self.prediction = prediction
             self.targetBelief = targetBelief
             self.targetSituation = targetSituation
             self.urgeBehaviour = urgeBehaviour
@@ -58,6 +61,9 @@ public enum InterventionParameteriser {
 
         if let hotThought = context.hotThought {
             result = result.replacingOccurrences(of: "{{hotThought}}", with: lowercaseFirst(hotThought))
+        }
+        if let prediction = context.prediction {
+            result = result.replacingOccurrences(of: "{{prediction}}", with: lowercaseFirst(prediction))
         }
         if let targetBelief = context.targetBelief {
             result = result.replacingOccurrences(of: "{{targetBelief}}", with: lowercaseFirst(targetBelief))

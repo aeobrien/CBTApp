@@ -1,14 +1,24 @@
 import SwiftUI
 import Domain
 import DesignSystem
+import Features
 import Utilities
 
 struct ContentView: View {
     private let logger = CBTLogger.logger(for: .app)
+    @State private var showingRunFlow = false
 
     var body: some View {
         NavigationStack {
             List {
+                Section("Run Mode") {
+                    Button {
+                        showingRunFlow = true
+                    } label: {
+                        Label("Start a Run", systemImage: "play.circle.fill")
+                    }
+                }
+
                 Section("Design System") {
                     NavigationLink("Component Catalogue") {
                         ComponentCatalogueView()
@@ -56,6 +66,12 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("CBT App")
+        }
+        .fullScreenCover(isPresented: $showingRunFlow) {
+            RunFlowCoordinator(
+                protocolRepository: MockProtocolRepository(protocols: SampleData.allProtocols),
+                runRepository: MockRunRepository()
+            )
         }
         .onAppear {
             logger.info("ContentView appeared — \(SampleData.allProtocols.count) sample protocols loaded")

@@ -57,9 +57,23 @@ struct InterventionLibraryTests {
 @Suite("InterventionParameteriser")
 struct InterventionParameteriserTests {
 
-    @Test("Substitutes hotThought placeholder")
-    func hotThoughtSubstitution() {
+    @Test("Substitutes prediction placeholder in Prediction Test")
+    func predictionSubstitution() {
         let template = InterventionLibrary.behaviouralExperimentPredictionTest
+        let context = InterventionParameteriser.Context(
+            prediction: "everyone will hate me"
+        )
+        let instance = InterventionParameteriser.parameterise(template: template, context: context)
+
+        #expect(instance.script.contains("everyone will hate me"))
+        #expect(!instance.script.contains("{{prediction}}"))
+        #expect(instance.interventionID == template.id)
+        #expect(instance.type == template.type)
+    }
+
+    @Test("Substitutes hotThought placeholder in Survey template")
+    func hotThoughtSubstitution() {
+        let template = InterventionLibrary.behaviouralExperimentSurvey
         let context = InterventionParameteriser.Context(
             hotThought: "nobody likes me"
         )
@@ -87,7 +101,7 @@ struct InterventionParameteriserTests {
     func lowercasesFirstChar() {
         let template = InterventionLibrary.behaviouralExperimentPredictionTest
         let context = InterventionParameteriser.Context(
-            hotThought: "Nobody likes me"
+            prediction: "Nobody likes me"
         )
         let instance = InterventionParameteriser.parameterise(template: template, context: context)
 
@@ -100,7 +114,7 @@ struct InterventionParameteriserTests {
         let bePlaceholders = InterventionParameteriser.placeholders(
             in: InterventionLibrary.behaviouralExperimentPredictionTest
         )
-        #expect(bePlaceholders == Set(["hotThought"]))
+        #expect(bePlaceholders == Set(["prediction"]))
 
         let delayPlaceholders = InterventionParameteriser.placeholders(
             in: InterventionLibrary.delayExperimentUrge
@@ -116,8 +130,8 @@ struct InterventionParameteriserTests {
     @Test("Script respects character limit")
     func scriptCharacterLimit() {
         let template = InterventionLibrary.behaviouralExperimentPredictionTest
-        let longThought = String(repeating: "a very long thought that keeps going ", count: 10)
-        let context = InterventionParameteriser.Context(hotThought: longThought)
+        let longPrediction = String(repeating: "a very long prediction that keeps going ", count: 10)
+        let context = InterventionParameteriser.Context(prediction: longPrediction)
         let instance = InterventionParameteriser.parameterise(template: template, context: context)
 
         #expect(instance.script.count <= InterventionParameteriser.maxScriptLength)
