@@ -15,6 +15,12 @@ struct ContentView: View {
                     }
                 }
 
+                Section("Intervention Library") {
+                    NavigationLink("Browse Templates") {
+                        InterventionLibraryTestView()
+                    }
+                }
+
                 Section("Sample Protocols") {
                     ForEach(SampleData.allProtocols) { proto in
                         NavigationLink {

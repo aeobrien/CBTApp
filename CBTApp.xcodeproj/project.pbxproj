@@ -19,6 +19,7 @@
 		6A7FABDEE4AFAE2045B0F30F /* CBTAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E37869F06042DF00E94F5FBE /* CBTAppTests.swift */; };
 		90D3A38FAE736A91C2E86091 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = C81CBC8015BD00F86C25EE1F /* Data */; };
 		AECF9132F13196752A754665 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = E4527E8AC35EA964D5598860 /* Utilities */; };
+		B04D7B2D3F1EB0D447C48E0B /* InterventionLibraryTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9071EDDC57AD38C8C5C9A546 /* InterventionLibraryTestView.swift */; };
 		CCDD17A963DC257B50C44B7A /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = F5D492A133F2C14BED7CEF60 /* Domain */; };
 		D2E01BFDC13B7489FCEDD182 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = FBD1F9525A856BF3BA84D1E2 /* DesignSystem */; };
 		E4D09783B0B34B23AFA5F5C3 /* Services in Frameworks */ = {isa = PBXBuildFile; productRef = 959B447E0EF6DB7A25C7E08C /* Services */; };
@@ -40,6 +41,7 @@
 		4A7CE4D585756CC50EABEFE4 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DesignSystem; path = Packages/DesignSystem; sourceTree = SOURCE_ROOT; };
 		5DBF02960B831D1572739802 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Features; path = Packages/Features; sourceTree = SOURCE_ROOT; };
 		88DD0A6A452C349A83EEFD16 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		9071EDDC57AD38C8C5C9A546 /* InterventionLibraryTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterventionLibraryTestView.swift; sourceTree = "<group>"; };
 		B32BC5843DEAC045F69453A2 /* Services */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Services; path = Packages/Services; sourceTree = SOURCE_ROOT; };
 		D8DA2B6A1718B07C2BEA1AD8 /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Data; path = Packages/Data; sourceTree = SOURCE_ROOT; };
 		E11F21D36E186D35B798E697 /* Utilities */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Utilities; path = Packages/Utilities; sourceTree = SOURCE_ROOT; };
@@ -114,6 +116,7 @@
 			children = (
 				1BADEE2E3185C9281230883C /* CBTApp.swift */,
 				88DD0A6A452C349A83EEFD16 /* ContentView.swift */,
+				9071EDDC57AD38C8C5C9A546 /* InterventionLibraryTestView.swift */,
 			);
 			name = Sources;
 			path = CBTApp/Sources;
@@ -224,6 +227,7 @@
 			files = (
 				51678E3C9D0A077CEE553D3D /* CBTApp.swift in Sources */,
 				4B742A83E6C7F31F03033FFA /* ContentView.swift in Sources */,
+				B04D7B2D3F1EB0D447C48E0B /* InterventionLibraryTestView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
