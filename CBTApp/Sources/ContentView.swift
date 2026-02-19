@@ -21,6 +21,12 @@ struct ContentView: View {
                     }
                 }
 
+                Section("Protocol Engine") {
+                    NavigationLink("Engine Test Harness") {
+                        ProtocolEngineTestView()
+                    }
+                }
+
                 Section("Sample Protocols") {
                     ForEach(SampleData.allProtocols) { proto in
                         NavigationLink {

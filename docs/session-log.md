@@ -2,21 +2,78 @@
 
 ## Session 1 — 2026-02-19
 
-### Completed
-- Phase 0: Project scaffolding
-  - Xcode project created with XcodeGen
-  - 6 SPM packages: Domain, Data, Services, DesignSystem, Features, Utilities
-  - CBTLogger utility with os.Logger, subsystem/category/correlation ID support
-  - All packages build and test successfully
-  - 15 automated tests passing (7 Utilities, 1 each in 5 other packages, 3 app-level integration)
-  - Git repo initialised
-  - Manual test brief written
+### Phase 0: Project Scaffolding ✅
+- Xcode project created with XcodeGen (`project.yml`)
+- 6 SPM packages: Domain, Data, Services, DesignSystem, Features, Utilities
+- CBTLogger utility with os.Logger, subsystem/category/correlation ID support
+- Category prefix `[CategoryName]` added to all log messages for text-based filtering
+- Git repo initialised, committed on `main`
+- Manual tests passed, committed
 
-### Auto-test results
-- `swift test` (Utilities): 7/7 passed
-- `swift test` (Domain, Data, DesignSystem, Services, Features): 1/1 each, all passed
-- `xcodebuild test` (CBTApp scheme, iPhone 16 simulator): 3/3 passed
+### Phase 1: Domain Models + Persistence ✅
+- 10 enum types (EmotionType, UrgeType, BodySignal, OutcomeTag, ProtocolStatus, InterventionType, MeasureFrequency, RunCompletionStatus, MaintainingBehaviourType, TargetLoopType)
+- 9 model types (CBTProtocol, Run, Formulation, InterventionInstance, InterventionTemplate, Experiment, StandardisedMeasure, Rules, SafetyInfo, CaptureField, RelapsePreventionCard)
+- 3 repository protocols + 2 mock implementations
+- 3 SwiftData @Model persistence classes (PersistedProtocol, PersistedRun, PersistedMeasureScore)
+- 3 SwiftData repository implementations
+- 3 realistic sample protocols (Late-Night Rumination, Comparison & Scrolling, Work Perfectionism)
+- ContentView with protocol list + detail navigation
+- 65 automated tests passing (Utilities 7, Domain 50, Data 8)
+- Manual tests passed, committed on `phase-1/domain-models`
 
-### Next
-- Awaiting manual test sign-off on Phase 0
-- Then: Phase 1 — Domain Models + Persistence
+### Phase 2: Design System ✅
+- Design tokens: CBTColors (semantic colours, component-specific), CBTTypography (Dynamic Type scale), CBTSpacing (4pt grid)
+- 10 components: CBTSlider, BeliefStrengthSlider, SelectableChip + FlowLayout + ChipGrid, ProtocolCard, CBTTimerView + TimerModel, CBTChecklist, VoiceInputButton (UI only), OutcomeTagSelector, ScriptCard, SafetyBanner
+- Component catalogue view (scrollable reference of all components in all states)
+- 15 automated tests passing (Tokens 3, TimerModel 9, OutcomeTag 2, Module 1)
+- Manual tests passed, committed on `phase-2/design-system`
+- Fix applied: count-up timer centred with `.frame(maxWidth: .infinity)`
+
+### Phase 3: Curated Intervention Library ✅
+- 9 intervention templates covering all 8 InterventionType cases (2 behavioural experiment variants)
+- InterventionParameteriser: substitutes `{{hotThought}}`, `{{urgeBehaviour}}`, `{{targetSituation}}`, lowercases first char for mid-sentence insertion, enforces 240-char limit
+- InterventionSelector: query by type, contraindication exclusion, keyword relevance, ACT boundary rule
+- Interactive test view with per-template placeholder detection (only shows relevant fields)
+- 71 automated tests passing (original 50 + Library 5 + Parameteriser 7 + Selector 7 + placeholder/lowercase 2)
+- Manual tests passed, committed on `phase-3/intervention-library`
+
+### Phase 4: Protocol Engine + JITAI Logic ✅
+- ProtocolEngine: loads protocol, ordered capture fields, recommends interventions via JITAI, evaluates review rules, checks due measures
+- JITAIEngine: 6-level priority decision logic
+  1. Measure due → prompt measure
+  2. Active experiment → follow-up
+  3. Recent run (<2h) + low intensity (<30) → outside-app action
+  4. First run (completedRunCount == 0) → default to behavioural experiment
+  5. Urge-based → type-specific intervention selection
+  6. Intensity-based → severity-appropriate interventions
+- ReviewRuleEvaluator: parses `runs >= N`, `after_N_runs`, `no_shift_after_N`, `no_shift_after_N_runs`
+- Test harness view with auto-evaluate and diagnostics panel
+- 108 automated tests passing (original 101 + 7 end-to-end pipeline tests)
+- Fixes applied across two test rounds:
+  - TC-02 fix: moved first-run check to priority 4 (before urge/intensity)
+  - TC-06 fix: JITAI keyword "worry" didn't substring-match "worries" — changed to "worries"/"ruminat" stems
+  - TC-07 fix: test harness UI improved (red slider for current intensity, auto-evaluate, diagnostics)
+  - TC-08 fix: parser now handles `after_N_runs` format from sample data
+- All manual tests passed (TC-01 through TC-09)
+- Committed on `phase-4/protocol-engine`
+
+## Git State
+- `main` branch: Phase 0 only
+- `phase-1/domain-models`: Phase 0 + 1
+- `phase-2/design-system`: Phase 0 + 1 + 2
+- `phase-3/intervention-library`: Phase 0 + 1 + 2 + 3
+- `phase-4/protocol-engine`: Phase 0 + 1 + 2 + 3 + 4
+
+## Remaining Roadmap (Phases 5–15)
+See `/Users/aidan/Dev/CBT/ROADMAP.md` for full details:
+- Phase 5: Run Mode (6 screens)
+- Phase 6: Validation Pipeline
+- Phase 7: Agent Service (OpenAI GPT-5.2)
+- Phase 8: Evidence & Review
+- Phase 9: Workshop Mode
+- Phase 10: Safety & Escalation
+- Phase 11: Voice Input (Whisper)
+- Phase 12: Onboarding / Psychoeducation
+- Phase 13: Quick Triage
+- Phase 14: Settings, Export, Protocol Completion
+- Phase 15: Integration, Polish, Full Flow Testing
