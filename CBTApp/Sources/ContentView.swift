@@ -2,6 +2,7 @@ import SwiftUI
 import Domain
 import DesignSystem
 import Features
+import Services
 import Utilities
 
 struct ContentView: View {
@@ -34,6 +35,12 @@ struct ContentView: View {
                 Section("Protocol Engine") {
                     NavigationLink("Engine Test Harness") {
                         ProtocolEngineTestView()
+                    }
+                }
+
+                Section("Validation Pipeline") {
+                    NavigationLink("Validation Test Harness") {
+                        ValidationTestView()
                     }
                 }
 
