@@ -50,6 +50,12 @@ struct ContentView: View {
                     }
                 }
 
+                Section("Evidence & Review") {
+                    NavigationLink("Evidence Test Harness") {
+                        EvidenceTestView()
+                    }
+                }
+
                 Section("Sample Protocols") {
                     ForEach(SampleData.allProtocols) { proto in
                         NavigationLink {

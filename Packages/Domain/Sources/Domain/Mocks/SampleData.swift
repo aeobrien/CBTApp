@@ -170,4 +170,48 @@ public enum SampleData {
             )
         }
     }
+
+    /// Sample runs that meet completion criteria: belief ≤ 30, improving emotions, varied outcomes.
+    /// Use this for testing the Evidence dashboard and completion pathway.
+    public static func completionReadyRuns(forProtocolID protocolID: UUID) -> [Run] {
+        let outcomeTagSets: [[OutcomeTag]] = [
+            [.intensityDropped],
+            [.predictionDidntHappen, .intensityDropped],
+            [.canHandleMoreThanThought],
+            [.intensityDropped, .uncomfortableButTolerable],
+            [.sameButTolerable],
+            [.predictionDidntHappen],
+            [.intensityDropped, .canHandleMoreThanThought]
+        ]
+        let interventionIDs = ["delay_01", "delay_01", "defusion_01", "delay_01", "delay_01", "defusion_01", "delay_01"]
+
+        return (0..<7).map { i in
+            let daysAgo = Double(7 - i)
+            let start = Date().addingTimeInterval(-daysAgo * 86400)
+            let beforeIntensity = max(25, 70 - i * 7)
+            let afterIntensity = max(10, beforeIntensity - 30)
+            let beliefBefore = max(20, 55 - i * 6)
+            let beliefAfter = max(10, beliefBefore - 15 - i)
+
+            return Run(
+                protocolID: protocolID,
+                timestampStart: start,
+                timestampEnd: start.addingTimeInterval(Double(120 + i * 20)),
+                situation: "Sample situation \(i + 1)",
+                hotThought: "Sample hot thought",
+                emotions: [EmotionRating(emotion: .anxiety, intensity: beforeIntensity)],
+                bodySignals: [.tightChest],
+                urge: .ruminate,
+                beliefStrengthBefore: beliefBefore,
+                predictionResponse: "It will go badly",
+                alternativeResponse: "It might be fine",
+                chosenInterventions: [interventionIDs[i]],
+                emotionsAfter: [EmotionRating(emotion: .anxiety, intensity: afterIntensity)],
+                beliefStrengthAfter: beliefAfter,
+                outcomeTags: outcomeTagSets[i],
+                helpfulnessRating: i == 3 ? .notHelpful : .helpful,
+                completionStatus: .completed
+            )
+        }
+    }
 }
