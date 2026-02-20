@@ -44,6 +44,12 @@ struct ContentView: View {
                     }
                 }
 
+                Section("Agent Service") {
+                    NavigationLink("Agent Test Harness") {
+                        AgentTestView()
+                    }
+                }
+
                 Section("Sample Protocols") {
                     ForEach(SampleData.allProtocols) { proto in
                         NavigationLink {

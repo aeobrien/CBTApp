@@ -19,6 +19,14 @@ public struct CaptureField: Codable, Sendable, Equatable, Identifiable {
         self.label = label
         self.isRequired = isRequired
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        fieldType = try container.decode(CaptureFieldType.self, forKey: .fieldType)
+        label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+        isRequired = try container.decodeIfPresent(Bool.self, forKey: .isRequired) ?? false
+    }
 }
 
 /// The type of input a capture field expects.

@@ -97,6 +97,46 @@ public struct CBTProtocol: Codable, Sendable, Equatable, Identifiable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
+
+    // MARK: - Custom Decodable
+
+    /// Lenient decoder that defaults missing optional/array fields.
+    /// Required because LLM-generated JSON often omits optional arrays.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        // Required fields
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        version = try container.decodeIfPresent(String.self, forKey: .version) ?? "1.0.0"
+        name = try container.decode(String.self, forKey: .name)
+        summary = try container.decode(String.self, forKey: .summary)
+        status = try container.decodeIfPresent(ProtocolStatus.self, forKey: .status) ?? .active
+        whenToUse = try container.decodeIfPresent([String].self, forKey: .whenToUse) ?? []
+        hotThoughtTemplates = try container.decodeIfPresent([String].self, forKey: .hotThoughtTemplates) ?? []
+        maintainingBehaviours = try container.decodeIfPresent([MaintainingBehaviour].self, forKey: .maintainingBehaviours) ?? []
+        targets = try container.decodeIfPresent(ProtocolTargets.self, forKey: .targets) ?? ProtocolTargets()
+        captureFields = try container.decodeIfPresent([CaptureField].self, forKey: .captureFields) ?? CaptureField.defaultFields
+        interventions = try container.decodeIfPresent([InterventionInstance].self, forKey: .interventions) ?? []
+        experiments = try container.decodeIfPresent([Experiment].self, forKey: .experiments) ?? []
+        measures = try container.decodeIfPresent([String].self, forKey: .measures) ?? ["emotion", "belief_strength"]
+        reviewRules = try container.decodeIfPresent([ReviewRule].self, forKey: .reviewRules) ?? ReviewRule.defaults
+        safety = try container.decodeIfPresent(SafetyInfo.self, forKey: .safety) ?? SafetyInfo()
+        formulation = try container.decodeIfPresent(Formulation.self, forKey: .formulation) ?? Formulation()
+
+        // Optional fields — always lenient
+        tags = try container.decodeIfPresent([String].self, forKey: .tags) ?? []
+        exclusions = try container.decodeIfPresent([String].self, forKey: .exclusions) ?? []
+        tone = try container.decodeIfPresent(String.self, forKey: .tone)
+        defaults = try container.decodeIfPresent(ProtocolDefaults.self, forKey: .defaults)
+        standardisedMeasures = try container.decodeIfPresent([StandardisedMeasure].self, forKey: .standardisedMeasures) ?? []
+        escalationRules = try container.decodeIfPresent([EscalationRule].self, forKey: .escalationRules) ?? []
+        completionSummary = try container.decodeIfPresent(String.self, forKey: .completionSummary)
+        relapsePreventionCard = try container.decodeIfPresent(RelapsePreventionCard.self, forKey: .relapsePreventionCard)
+
+        // Metadata — default to now if missing
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
+        updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? Date()
+    }
 }
 
 // MARK: - Supporting types
@@ -121,6 +161,15 @@ public struct MaintainingBehaviour: Codable, Sendable, Equatable, Identifiable {
         self.description = description
         self.shortTermRelief = shortTermRelief
         self.longTermCost = longTermCost
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        type = try container.decode(MaintainingBehaviourType.self, forKey: .type)
+        description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
+        shortTermRelief = try container.decodeIfPresent(String.self, forKey: .shortTermRelief) ?? ""
+        longTermCost = try container.decodeIfPresent(String.self, forKey: .longTermCost) ?? ""
     }
 }
 

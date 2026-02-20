@@ -12,6 +12,12 @@ public struct SafetyInfo: Codable, Sendable, Equatable {
         self.message = message
         self.resources = resources
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        message = try container.decodeIfPresent(String.self, forKey: .message) ?? "If you're in crisis or need immediate support, please reach out."
+        resources = try container.decodeIfPresent([SafetyResource].self, forKey: .resources) ?? SafetyResource.ukDefaults
+    }
 }
 
 /// A single safety resource link.
@@ -34,6 +40,15 @@ public struct SafetyResource: Codable, Sendable, Equatable, Identifiable {
         self.detail = detail
         self.phoneNumber = phoneNumber
         self.url = url
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
+        detail = try container.decodeIfPresent(String.self, forKey: .detail) ?? ""
+        phoneNumber = try container.decodeIfPresent(String.self, forKey: .phoneNumber)
+        url = try container.decodeIfPresent(String.self, forKey: .url)
     }
 
     /// Default UK crisis resources.

@@ -15,6 +15,13 @@ public struct ReviewRule: Codable, Sendable, Equatable, Identifiable {
         self.condition = condition
         self.action = action
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        condition = try container.decodeIfPresent(String.self, forKey: .condition) ?? ""
+        action = try container.decodeIfPresent(String.self, forKey: .action) ?? ""
+    }
 }
 
 /// A rule that triggers escalation (stepped-care logic).
@@ -31,5 +38,12 @@ public struct EscalationRule: Codable, Sendable, Equatable, Identifiable {
         self.id = id
         self.trigger = trigger
         self.action = action
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        trigger = try container.decodeIfPresent(String.self, forKey: .trigger) ?? ""
+        action = try container.decodeIfPresent(String.self, forKey: .action) ?? ""
     }
 }

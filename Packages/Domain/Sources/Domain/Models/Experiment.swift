@@ -24,6 +24,16 @@ public struct Experiment: Codable, Sendable, Equatable, Identifiable {
         self.successCriteria = successCriteria
         self.outcomes = outcomes
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        prediction = try container.decodeIfPresent(String.self, forKey: .prediction) ?? ""
+        steps = try container.decodeIfPresent([String].self, forKey: .steps) ?? []
+        measures = try container.decodeIfPresent([String].self, forKey: .measures) ?? []
+        successCriteria = try container.decodeIfPresent(String.self, forKey: .successCriteria) ?? ""
+        outcomes = try container.decodeIfPresent([ExperimentOutcome].self, forKey: .outcomes) ?? []
+    }
 }
 
 /// A recorded outcome of running an experiment.

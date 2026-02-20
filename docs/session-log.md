@@ -78,6 +78,29 @@
 - Manual test brief: `docs/manual-tests/phase-5-run-mode.md` (8 test cases)
 - Awaiting manual testing
 
+### Phase 7: Agent Service (OpenAI Integration) — BUILT, awaiting manual testing
+- AgentServiceProtocol + supporting types (Domain): `AgentResult`, `ConversationMessage`, `GenerationContext`
+- MockAgentService (Domain): configurable mock with call tracking
+- OpenAI integration (Services):
+  - `AgentServiceError`: 9-case error enum with localized descriptions
+  - `OpenAITypes`: Codable request/response types for chat completions API
+  - `KeychainHelper`: simple Keychain wrapper for API key storage
+  - `OpenAIAPIClient`: actor with exponential backoff retry (429, 5xx), 30s timeout, API key from Keychain or override
+  - `ConversationManager`: static enum building system prompts dynamically from all `CaseIterable` enums + `InterventionLibrary.allTemplates`, triple-layer JSON extraction
+  - `ProtocolGenerationPipeline`: generate + validate + repair loop (max 3 attempts)
+  - `ProtocolPatchPipeline`: revision pipeline preserving ID, incrementing minor version
+  - `OpenAIAgentService`: top-level `AgentServiceProtocol` implementation composing all actors
+- 28 new automated tests:
+  - OpenAIAPIClient: 7 (success, headers, JSON mode, 429 retry, timeout, malformed, missing key)
+  - ConversationManager: 8 (enum values, library IDs, constraints, JSON extraction ×3, revision prompt, toChatMessages)
+  - ProtocolGenerationPipeline: 7 (valid response, repair on invalid script, 3× invalid → repairFailed, no JSON, invalid ID, network error, timestamps)
+  - ProtocolPatchPipeline: 5 (version increment ×3, preserves ID, revision prompt)
+- Total Services tests: 57 (29 existing + 28 new)
+- Domain tests: 109 (unchanged)
+- App builds on iOS Simulator
+- AgentTestView test harness with API key entry, protocol generation, result display
+- Manual test brief: `docs/manual-tests/phase-7-agent-service.md`
+
 ## Git State
 - `main` branch: Phase 0 only
 - `phase-1/domain-models`: Phase 0 + 1

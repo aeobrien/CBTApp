@@ -35,4 +35,16 @@ public struct InterventionInstance: Codable, Sendable, Equatable, Identifiable {
         self.durationEstimate = durationEstimate
         self.isTimed = isTimed
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        interventionID = try container.decode(String.self, forKey: .interventionID)
+        type = try container.decode(InterventionType.self, forKey: .type)
+        title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
+        script = try container.decodeIfPresent(String.self, forKey: .script) ?? ""
+        steps = try container.decodeIfPresent([String].self, forKey: .steps) ?? []
+        durationEstimate = try container.decodeIfPresent(Int.self, forKey: .durationEstimate) ?? 300
+        isTimed = try container.decodeIfPresent(Bool.self, forKey: .isTimed) ?? false
+    }
 }

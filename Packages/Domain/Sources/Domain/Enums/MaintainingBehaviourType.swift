@@ -17,6 +17,38 @@ public enum MaintainingBehaviourType: String, Codable, Sendable, CaseIterable, I
 
     public var id: String { rawValue }
 
+    /// Common LLM-generated aliases that map to canonical raw values.
+    private static let aliases: [String: MaintainingBehaviourType] = [
+        "ruminate": .rumination,
+        "ruminat": .rumination,
+        "check": .checking,
+        "avoid": .avoidance,
+        "reassurance_seek": .reassuranceSeeking,
+        "reassurance": .reassuranceSeeking,
+        "overwork": .overworking,
+        "scroll": .scrolling,
+        "arguing": .arguingInternally,
+        "suppress": .suppression,
+        "withdraw": .withdrawal,
+        "procrastinate": .procrastination,
+        "substance": .substanceUse,
+    ]
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = try container.decode(String.self)
+        if let canonical = MaintainingBehaviourType(rawValue: value) {
+            self = canonical
+        } else if let aliased = Self.aliases[value] {
+            self = aliased
+        } else {
+            throw DecodingError.dataCorrupted(
+                .init(codingPath: decoder.codingPath,
+                      debugDescription: "Cannot initialize MaintainingBehaviourType from invalid String value \(value). Valid values: \(Self.allCases.map(\.rawValue).joined(separator: ", "))")
+            )
+        }
+    }
+
     public var displayName: String {
         switch self {
         case .rumination: "Rumination"

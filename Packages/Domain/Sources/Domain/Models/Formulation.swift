@@ -13,6 +13,12 @@ public struct Formulation: Codable, Sendable, Equatable {
         self.triggerAppraisalLinks = triggerAppraisalLinks
         self.maintainingCycles = maintainingCycles
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        triggerAppraisalLinks = try container.decodeIfPresent([TriggerAppraisalLink].self, forKey: .triggerAppraisalLinks) ?? []
+        maintainingCycles = try container.decodeIfPresent([MaintainingCycle].self, forKey: .maintainingCycles) ?? []
+    }
 }
 
 /// Maps a trigger through the cognitive chain.
@@ -36,6 +42,15 @@ public struct TriggerAppraisalLink: Codable, Sendable, Equatable, Identifiable {
         self.emotion = emotion
         self.behaviour = behaviour
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        trigger = try container.decode(String.self, forKey: .trigger)
+        appraisal = try container.decode(String.self, forKey: .appraisal)
+        emotion = try container.decode(EmotionType.self, forKey: .emotion)
+        behaviour = try container.decode(UrgeType.self, forKey: .behaviour)
+    }
 }
 
 /// A single maintaining cycle with its function and cost.
@@ -58,5 +73,14 @@ public struct MaintainingCycle: Codable, Sendable, Equatable, Identifiable {
         self.shortTermFunction = shortTermFunction
         self.longTermCost = longTermCost
         self.targetInterventionID = targetInterventionID
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        behaviour = try container.decode(MaintainingBehaviourType.self, forKey: .behaviour)
+        shortTermFunction = try container.decodeIfPresent(String.self, forKey: .shortTermFunction) ?? ""
+        longTermCost = try container.decodeIfPresent(String.self, forKey: .longTermCost) ?? ""
+        targetInterventionID = try container.decodeIfPresent(String.self, forKey: .targetInterventionID)
     }
 }
