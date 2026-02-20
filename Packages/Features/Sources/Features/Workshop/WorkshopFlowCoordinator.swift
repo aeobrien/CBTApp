@@ -14,11 +14,13 @@ public struct WorkshopFlowCoordinator: View {
     public init(
         agentService: any AgentServiceProtocol,
         protocolRepository: any ProtocolRepositoryProtocol,
+        safetySystem: (any SafetySystemProtocol)? = nil,
         existingProtocol: CBTProtocol? = nil
     ) {
         _viewModel = State(initialValue: WorkshopFlowViewModel(
             agentService: agentService,
             protocolRepository: protocolRepository,
+            safetySystem: safetySystem,
             existingProtocol: existingProtocol
         ))
     }
@@ -63,6 +65,10 @@ public struct WorkshopFlowCoordinator: View {
                         .background(.bar)
                 }
         }
+        .safetyCover(alert: Binding(
+            get: { viewModel.pendingSafetyAlert },
+            set: { viewModel.pendingSafetyAlert = $0 }
+        ))
         .onAppear {
             viewModel.loadExistingProtocol()
         }

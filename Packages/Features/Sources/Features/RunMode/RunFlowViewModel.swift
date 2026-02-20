@@ -61,6 +61,7 @@ public final class RunFlowViewModel: RunFlowViewModelProtocol {
 
     private let protocolRepository: any ProtocolRepositoryProtocol
     private let runRepository: any RunRepositoryProtocol
+    private let safetySystem: any SafetySystemProtocol
     private let logger: ModuleLogger
 
     // MARK: - Navigation
@@ -139,6 +140,10 @@ public final class RunFlowViewModel: RunFlowViewModelProtocol {
     public var summaryText: String = ""
     public var helpfulnessRating: HelpfulnessRating?
 
+    // MARK: - Safety
+
+    public var pendingSafetyAlert: SafetyAlert?
+
     // MARK: - Internal state
 
     private var currentRun: Run?
@@ -151,10 +156,12 @@ public final class RunFlowViewModel: RunFlowViewModelProtocol {
     public nonisolated init(
         protocolRepository: any ProtocolRepositoryProtocol,
         runRepository: any RunRepositoryProtocol,
+        safetySystem: (any SafetySystemProtocol)? = nil,
         logger: ModuleLogger = CBTLogger.logger(for: .runMode)
     ) {
         self.protocolRepository = protocolRepository
         self.runRepository = runRepository
+        self.safetySystem = safetySystem ?? MockSafetySystem()
         self.logger = logger
         self.correlationID = String(UUID().uuidString.prefix(8).lowercased())
     }
@@ -213,6 +220,13 @@ public final class RunFlowViewModel: RunFlowViewModelProtocol {
             break // Handled by selectProtocol
 
         case .capture:
+            // Safety scan on capture fields
+            let captureText = [situation, customHotThought, selectedHotThought ?? ""].joined(separator: " ")
+            if let alert = safetySystem.scanText(captureText) {
+                logger.info("Safety alert in run capture: \(alert.kind.rawValue)", correlationID: correlationID)
+                pendingSafetyAlert = alert
+                return
+            }
             syncCaptureToRun()
             await saveRun()
             navigationPath.append(.guidedDiscovery)
@@ -232,6 +246,13 @@ public final class RunFlowViewModel: RunFlowViewModelProtocol {
             navigationPath.append(.outcome)
 
         case .outcome:
+            // Safety scan on outcome text fields
+            let outcomeText = [learningNote, forwardPlan].joined(separator: " ")
+            if let alert = safetySystem.scanText(outcomeText) {
+                logger.info("Safety alert in run outcome: \(alert.kind.rawValue)", correlationID: correlationID)
+                pendingSafetyAlert = alert
+                return
+            }
             syncOutcomeToRun()
             await saveRun()
             generateSummary()

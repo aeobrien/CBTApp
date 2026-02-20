@@ -14,6 +14,7 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
 
     private let agentService: any AgentServiceProtocol
     private let protocolRepository: any ProtocolRepositoryProtocol
+    private let safetySystem: any SafetySystemProtocol
     private let logger: ModuleLogger
 
     // MARK: - Navigation
@@ -84,6 +85,10 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
 
     public var formulation: Formulation = Formulation()
 
+    // MARK: - Safety
+
+    public var pendingSafetyAlert: SafetyAlert?
+
     // MARK: - Revision mode
 
     public let isRevisionMode: Bool
@@ -98,11 +103,13 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
     public nonisolated init(
         agentService: any AgentServiceProtocol,
         protocolRepository: any ProtocolRepositoryProtocol,
+        safetySystem: (any SafetySystemProtocol)? = nil,
         existingProtocol: CBTProtocol? = nil,
         logger: ModuleLogger = CBTLogger.logger(for: .workshop)
     ) {
         self.agentService = agentService
         self.protocolRepository = protocolRepository
+        self.safetySystem = safetySystem ?? MockSafetySystem()
         self.existingProtocol = existingProtocol
         self.isRevisionMode = existingProtocol != nil
         self.logger = logger
@@ -165,6 +172,13 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
         case .capture:
             guard !situation.isEmpty else {
                 logger.warning("Cannot advance: situation is empty", correlationID: correlationID)
+                return
+            }
+            // Safety scan on capture fields
+            let captureText = [situation, hotThought].joined(separator: " ")
+            if let alert = safetySystem.scanText(captureText) {
+                logger.info("Safety alert in capture: \(alert.kind.rawValue)", correlationID: correlationID)
+                pendingSafetyAlert = alert
                 return
             }
             if let emotion = selectedEmotion, let urge = selectedUrge {
@@ -260,6 +274,13 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
     public func sendMessage() async {
         let input = userInput.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !input.isEmpty else { return }
+
+        // Safety scan on user input before sending to agent
+        if let alert = safetySystem.scanText(input) {
+            logger.info("Safety alert triggered in sendMessage: \(alert.kind.rawValue)", correlationID: correlationID)
+            pendingSafetyAlert = alert
+            return
+        }
 
         let stage = currentStage
         userInput = ""

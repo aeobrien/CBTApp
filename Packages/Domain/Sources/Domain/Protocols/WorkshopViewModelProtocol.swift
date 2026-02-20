@@ -72,6 +72,10 @@ public protocol WorkshopFlowViewModelProtocol: AnyObject {
 
     var formulation: Formulation { get }
 
+    // MARK: - Safety
+
+    var pendingSafetyAlert: SafetyAlert? { get set }
+
     // MARK: - Revision mode
 
     var isRevisionMode: Bool { get }

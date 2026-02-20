@@ -133,6 +133,29 @@
 - WorkshopTestView test harness (new + revision mode)
 - Manual test brief: `docs/manual-tests/phase-9-workshop.md`
 
+### Phase 10: Safety & Escalation System — BUILT, awaiting manual testing
+- Safety detection system with 4 alert kinds:
+  - **Acute risk**: regex classifier with self-referential pronoun filtering and metaphor exclusion (2 tiers: acute/elevated)
+  - **Chronic non-response**: PHQ-9 score increase ≥5, item 9 suicidality detection
+  - **Disengagement**: 14+ day gap since last completed run
+  - **Compulsive use**: 6+ runs in 24h or 8 consecutive non-improving runs
+- Domain layer: `SafetyAlert`, `SafetyAlertKind`, `SafetySystemProtocol`, `DisengagementDetector`, `CompulsiveUseDetector`, `MockSafetySystem`
+- Services layer: `AcuteRiskClassifier`, `EscalationEvaluator`, `SafetySystem` (concrete implementation)
+- Features layer: `SafetyResourcesView` + `.safetyCover()` view modifier (fullScreenCover on iOS, sheet on macOS)
+- ViewModel integration:
+  - `WorkshopFlowViewModel`: safety scan on sendMessage input and capture stage advance
+  - `RunFlowViewModel`: safety scan on capture and outcome stage advance
+  - Both coordinators wired with `.safetyCover()` modifier
+- New automated tests:
+  - Domain: DisengagementDetectorTests (6) + CompulsiveUseDetectorTests (6) = 12 new
+  - Services: AcuteRiskClassifierTests (8) + EscalationEvaluatorTests (7) + SafetySystemCompositionTests (3) = 18 new
+  - Total Domain: 71 XCTest + 109 swift-testing = 180
+  - Total Services: 75 swift-testing
+  - Total Features: 75 XCTest + 1 swift-testing = 76 (unchanged)
+- App builds on iOS Simulator
+- SafetyTestView test harness with quick-test buttons for all alert types
+- Manual test brief: `docs/manual-tests/phase-10-safety.md`
+
 ## Git State
 - `main` branch: Phase 0 only
 - `phase-1/domain-models`: Phase 0 + 1

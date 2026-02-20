@@ -62,6 +62,12 @@ struct ContentView: View {
                     }
                 }
 
+                Section("Safety & Escalation") {
+                    NavigationLink("Safety Test Harness") {
+                        SafetyTestView()
+                    }
+                }
+
                 Section("Sample Protocols") {
                     ForEach(SampleData.allProtocols) { proto in
                         NavigationLink {
@@ -95,7 +101,8 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $showingRunFlow) {
             RunFlowCoordinator(
                 protocolRepository: MockProtocolRepository(protocols: SampleData.allProtocols),
-                runRepository: MockRunRepository()
+                runRepository: MockRunRepository(),
+                safetySystem: SafetySystem()
             )
         }
         .onAppear {

@@ -9,17 +9,26 @@ public struct RunFlowCoordinator: View {
 
     public init(
         protocolRepository: any ProtocolRepositoryProtocol,
-        runRepository: any RunRepositoryProtocol
+        runRepository: any RunRepositoryProtocol,
+        safetySystem: (any SafetySystemProtocol)? = nil
     ) {
         _viewModel = State(initialValue: RunFlowViewModel(
             protocolRepository: protocolRepository,
-            runRepository: runRepository
+            runRepository: runRepository,
+            safetySystem: safetySystem
         ))
     }
 
     public var body: some View {
         NavigationStack(path: $viewModel.navigationPath) {
             ProtocolSelectionView(viewModel: viewModel)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Close") {
+                            dismiss()
+                        }
+                    }
+                }
                 .navigationDestination(for: RunFlowStep.self) { step in
                     switch step {
                     case .protocolSelection:
@@ -39,6 +48,10 @@ public struct RunFlowCoordinator: View {
                     }
                 }
         }
+        .safetyCover(alert: Binding(
+            get: { viewModel.pendingSafetyAlert },
+            set: { viewModel.pendingSafetyAlert = $0 }
+        ))
     }
 }
 

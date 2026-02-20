@@ -1,6 +1,7 @@
 import SwiftUI
 import Domain
 import Features
+import Services
 
 /// Test harness for Workshop Mode using MockAgentService.
 struct WorkshopTestView: View {
@@ -35,13 +36,15 @@ struct WorkshopTestView: View {
         .fullScreenCover(isPresented: $showingWorkshop) {
             WorkshopFlowCoordinator(
                 agentService: Self.contextualMock(),
-                protocolRepository: MockProtocolRepository()
+                protocolRepository: MockProtocolRepository(),
+                safetySystem: SafetySystem()
             )
         }
         .fullScreenCover(isPresented: $showingRevision) {
             WorkshopFlowCoordinator(
                 agentService: Self.contextualMock(),
                 protocolRepository: MockProtocolRepository(),
+                safetySystem: SafetySystem(),
                 existingProtocol: SampleData.allProtocols.first
             )
         }
