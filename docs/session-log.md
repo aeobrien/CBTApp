@@ -101,6 +101,38 @@
 - AgentTestView test harness with API key entry, protocol generation, result display
 - Manual test brief: `docs/manual-tests/phase-7-agent-service.md`
 
+### Phase 9: Workshop Mode ✅
+- 10-stage agent-led protocol construction workshop
+- Domain additions:
+  - `WorkshopStage` enum (10 stages with title, subtitle, stageNumber, isGuidedDiscovery)
+  - `WorkshopPrompts` with per-stage system prompts + `WorkshopContext` struct
+  - `FormulationBuilder` (progressive formulation assembly: fromCapture, addMaintainingCycles, setAppraisal, linkIntervention)
+  - `WorkshopFlowViewModelProtocol` + `GenerationState` enum
+- Features additions:
+  - `WorkshopFlowViewModel` (@Observable, single VM for all stages, per-stage conversations, generation/revision)
+  - `WorkshopFlowCoordinator` (NavigationStack + enum-based routing)
+  - 3 shared components: `ConversationView` (chat UI), `FormulationView` (progressive diagram), `StageProgressBar`
+  - 10 stage views: Stage1Capture through Stage9Generation
+  - Stage 1: situation, hot thought, emotion picker, intensity, urge picker
+  - Stages 2/3/4/6: guided discovery with agent conversation
+  - Stage 3: maintaining behaviour picker with add/remove
+  - Stage 4: target belief confirmation text field
+  - Stage 5: intervention selection from library (filtered by relevance)
+  - Stage 6: experiment design (conversation → structured fields)
+  - Stage 7: capture field toggles
+  - Stage 7.5: standardised measure selection with frequency picker
+  - Stage 8: review rule management
+  - Stage 9: generation with progress/success/failure states
+- Revision mode: pre-fills state from existing protocol, calls `reviseProtocol()`
+- New automated tests:
+  - Domain: FormulationBuilderTests (10) + WorkshopPromptsTests (6) = 16 new
+  - Features: WorkshopFlowViewModelTests (27) covering navigation, capture, guided discovery, interventions, generation, revision
+  - Total Domain: 59 XCTest + 109 swift-testing = 168
+  - Total Features: 75 XCTest + 1 swift-testing = 76
+- App builds on iOS Simulator
+- WorkshopTestView test harness (new + revision mode)
+- Manual test brief: `docs/manual-tests/phase-9-workshop.md`
+
 ## Git State
 - `main` branch: Phase 0 only
 - `phase-1/domain-models`: Phase 0 + 1

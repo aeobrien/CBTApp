@@ -10,6 +10,7 @@
 		081ED3201BAFBE3FF7C57D91 /* Features in Frameworks */ = {isa = PBXBuildFile; productRef = 5623C494F00451DE642B71D7 /* Features */; };
 		0E82EBC77F252C171857ED4B /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 10BCA44A6B559AD8B4D01446 /* DesignSystem */; };
 		141F3792AF415EB77873DE69 /* AgentTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22066B466D6338A732ACE39 /* AgentTestView.swift */; };
+		164C98A334E6753D424A2A27 /* WorkshopTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B7BDBD956ED2DAA4A4504E5 /* WorkshopTestView.swift */; };
 		2B6DB6F51E57DF59560FC5E1 /* Features in Frameworks */ = {isa = PBXBuildFile; productRef = B95B2B5379141BE27A275F67 /* Features */; };
 		389435B2DE121F75CE8C737D /* Services in Frameworks */ = {isa = PBXBuildFile; productRef = 91C04A5666D98A717350B142 /* Services */; };
 		3C02F8CD679D766F0A79F8FC /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 039AF293332F5C8C12DEA82E /* Data */; };
@@ -42,6 +43,7 @@
 /* Begin PBXFileReference section */
 		0535C4FCF2964B22FC638FE3 /* CBTAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CBTAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BADEE2E3185C9281230883C /* CBTApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBTApp.swift; sourceTree = "<group>"; };
+		2B7BDBD956ED2DAA4A4504E5 /* WorkshopTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkshopTestView.swift; sourceTree = "<group>"; };
 		4A7CE4D585756CC50EABEFE4 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DesignSystem; path = Packages/DesignSystem; sourceTree = SOURCE_ROOT; };
 		5DBF02960B831D1572739802 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Features; path = Packages/Features; sourceTree = SOURCE_ROOT; };
 		6B0F3A14E17BFE3665826699 /* ValidationTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationTestView.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				9071EDDC57AD38C8C5C9A546 /* InterventionLibraryTestView.swift */,
 				98E9BFCC974D3CDB44B6165C /* ProtocolEngineTestView.swift */,
 				6B0F3A14E17BFE3665826699 /* ValidationTestView.swift */,
+				2B7BDBD956ED2DAA4A4504E5 /* WorkshopTestView.swift */,
 			);
 			name = Sources;
 			path = CBTApp/Sources;
@@ -244,6 +247,7 @@
 				B04D7B2D3F1EB0D447C48E0B /* InterventionLibraryTestView.swift in Sources */,
 				DF8427E14391C1C766AA9787 /* ProtocolEngineTestView.swift in Sources */,
 				FBCF8664AA009B9851C0B3B9 /* ValidationTestView.swift in Sources */,
+				164C98A334E6753D424A2A27 /* WorkshopTestView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

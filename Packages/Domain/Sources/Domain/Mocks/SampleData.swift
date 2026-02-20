@@ -44,6 +44,23 @@ public enum SampleData {
                 successCriteria: "Nothing critical was forgotten"
             )
         ],
+        formulation: Formulation(
+            triggerAppraisalLinks: [
+                TriggerAppraisalLink(
+                    trigger: "Lying in bed after a difficult conversation",
+                    appraisal: "If I don't replay it, I'll miss something important",
+                    emotion: .anxiety,
+                    behaviour: .ruminate
+                )
+            ],
+            maintainingCycles: [
+                MaintainingCycle(
+                    behaviour: .rumination,
+                    shortTermFunction: "Feels like problem-solving",
+                    longTermCost: "Keeps me awake, increases next-day anxiety"
+                )
+            ]
+        ),
         tags: ["night", "rumination", "sleep"],
         standardisedMeasures: [
             StandardisedMeasure(measureID: "GAD-7", frequency: .fortnightly)
@@ -83,6 +100,20 @@ public enum SampleData {
                 successCriteria: "Nothing important was missed; felt better or neutral"
             )
         ],
+        formulation: Formulation(
+            triggerAppraisalLinks: [
+                TriggerAppraisalLink(
+                    trigger: "Scrolling social media and seeing achievements",
+                    appraisal: "Other people's visible success means I'm failing",
+                    emotion: .sadness,
+                    behaviour: .scroll
+                )
+            ],
+            maintainingCycles: [
+                MaintainingCycle(behaviour: .scrolling, shortTermFunction: "Checking feels like staying informed", longTermCost: "Increases inadequacy, wastes time"),
+                MaintainingCycle(behaviour: .avoidance, shortTermFunction: "Avoids facing own goals", longTermCost: "Goals stay unaddressed")
+            ]
+        ),
         tags: ["social_media", "comparison", "inadequacy"],
         standardisedMeasures: [
             StandardisedMeasure(measureID: "PHQ-9", frequency: .fortnightly)
@@ -129,6 +160,20 @@ public enum SampleData {
                 successCriteria: "No significant mistake, or mistake was minor and easily corrected"
             )
         ],
+        formulation: Formulation(
+            triggerAppraisalLinks: [
+                TriggerAppraisalLink(
+                    trigger: "About to send an email or submit work",
+                    appraisal: "If I don't check thoroughly, a serious mistake will slip through",
+                    emotion: .anxiety,
+                    behaviour: .check
+                )
+            ],
+            maintainingCycles: [
+                MaintainingCycle(behaviour: .checking, shortTermFunction: "Reduces uncertainty briefly", longTermCost: "Never feels 'done', increases anxiety"),
+                MaintainingCycle(behaviour: .overworking, shortTermFunction: "Feels productive", longTermCost: "Burnout, no rest, diminishing returns")
+            ]
+        ),
         tags: ["work", "perfectionism", "checking"]
     )
 

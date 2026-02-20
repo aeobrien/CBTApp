@@ -20,6 +20,12 @@ struct ContentView: View {
                     }
                 }
 
+                Section("Workshop Mode") {
+                    NavigationLink("Workshop Test Harness") {
+                        WorkshopTestView()
+                    }
+                }
+
                 Section("Design System") {
                     NavigationLink("Component Catalogue") {
                         ComponentCatalogueView()
