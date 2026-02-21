@@ -5,6 +5,7 @@ import DesignSystem
 /// Screen A: Choose which protocol to run.
 struct ProtocolSelectionView: View {
     @Bindable var viewModel: RunFlowViewModel
+    @State private var showingTriage = false
 
     var body: some View {
         ScrollView {
@@ -13,6 +14,18 @@ struct ProtocolSelectionView: View {
                 TextField("Search protocols...", text: $viewModel.searchQuery)
                     .textFieldStyle(.roundedBorder)
                     .padding(.horizontal, CBTSpacing.md)
+
+                // Quick Triage button
+                Button {
+                    showingTriage = true
+                } label: {
+                    Label("I'm not sure", systemImage: "questionmark.circle")
+                        .font(CBTTypography.body)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .tint(CBTColors.accent)
+                .padding(.horizontal, CBTSpacing.md)
 
                 if viewModel.filteredProtocols.isEmpty {
                     ContentUnavailableView(
@@ -46,6 +59,16 @@ struct ProtocolSelectionView: View {
         .navigationTitle("Choose Protocol")
         .task {
             await viewModel.loadProtocols()
+        }
+        .sheet(isPresented: $showingTriage) {
+            QuickTriageView(
+                viewModel: QuickTriageViewModel(
+                    protocols: viewModel.allProtocols,
+                    onSelectProtocol: { [viewModel] proto in
+                        Task { await viewModel.selectProtocol(proto) }
+                    }
+                )
+            )
         }
     }
 }
