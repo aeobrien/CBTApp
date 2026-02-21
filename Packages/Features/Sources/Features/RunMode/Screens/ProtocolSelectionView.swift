@@ -5,6 +5,7 @@ import DesignSystem
 /// Screen A: Choose which protocol to run.
 struct ProtocolSelectionView: View {
     @Bindable var viewModel: RunFlowViewModel
+    var onBuildNew: (() -> Void)?
     @State private var showingTriage = false
 
     var body: some View {
@@ -66,7 +67,8 @@ struct ProtocolSelectionView: View {
                     protocols: viewModel.allProtocols,
                     onSelectProtocol: { [viewModel] proto in
                         Task { await viewModel.selectProtocol(proto) }
-                    }
+                    },
+                    onBuildNew: onBuildNew
                 )
             )
         }

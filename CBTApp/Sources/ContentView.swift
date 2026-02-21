@@ -9,6 +9,7 @@ struct ContentView: View {
     private let logger = CBTLogger.logger(for: .app)
     private let voiceService = WhisperVoiceInputService()
     @State private var showingRunFlow = false
+    @State private var showingWorkshop = false
 
     var body: some View {
         NavigationStack {
@@ -126,11 +127,32 @@ struct ContentView: View {
                 protocolRepository: MockProtocolRepository(protocols: SampleData.allProtocols),
                 runRepository: MockRunRepository(),
                 safetySystem: SafetySystem(),
+                voiceInputService: voiceService,
+                onBuildNew: {
+                    showingRunFlow = false
+                    // Small delay to let the run flow dismiss before presenting workshop
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        showingWorkshop = true
+                    }
+                }
+            )
+        }
+        .fullScreenCover(isPresented: $showingWorkshop) {
+            WorkshopFlowCoordinator(
+                agentService: MockAgentService(),
+                protocolRepository: MockProtocolRepository(protocols: SampleData.allProtocols),
+                safetySystem: SafetySystem(),
                 voiceInputService: voiceService
             )
         }
-        .onAppear {
+        .task {
             logger.info("ContentView appeared — \(SampleData.allProtocols.count) sample protocols loaded")
+            // Pre-load Whisper model so voice input is ready instantly
+            do {
+                try await voiceService.prepareModel()
+            } catch {
+                logger.error("Failed to pre-load Whisper model: \(error.localizedDescription)")
+            }
         }
     }
 }

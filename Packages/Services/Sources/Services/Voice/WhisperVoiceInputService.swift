@@ -7,10 +7,13 @@ import WhisperKit
 import AVFoundation
 #endif
 
+
 /// On-device speech-to-text using WhisperKit.
 ///
-/// Captures audio via `AVAudioEngine` at 16 kHz mono, accumulates samples
-/// in memory, and transcribes on stop. No audio files are persisted.
+/// Records audio via `AVAudioRecorder` (reliable on both device and Simulator),
+/// then resamples to 16 kHz and passes the samples to WhisperKit for transcription.
+/// WhisperKit's built-in `AudioProcessor` is not used for recording because it
+/// crashes on the iOS Simulator during audio device reconfiguration.
 public final class WhisperVoiceInputService: VoiceInputServiceProtocol, @unchecked Sendable {
 
     // MARK: - State
@@ -25,10 +28,11 @@ public final class WhisperVoiceInputService: VoiceInputServiceProtocol, @uncheck
     private let modelVariant: String
     private let logger = CBTLogger.logger(for: .voiceInput)
 
-    #if canImport(AVFoundation)
-    private var audioEngine: AVAudioEngine?
-    #endif
-    private var audioSamples: [Float] = []
+    /// AVAudioRecorder-based capture
+    private var recorder: AVAudioRecorder?
+    private var recordingURL: URL {
+        FileManager.default.temporaryDirectory.appendingPathComponent("whisper_recording.wav")
+    }
 
     // MARK: - Init
 
@@ -47,7 +51,29 @@ public final class WhisperVoiceInputService: VoiceInputServiceProtocol, @uncheck
 
         do {
             let kit = try await WhisperKit(model: modelVariant)
+
+            // WhisperKit init downloads model files but may not fully load them.
+            // Explicitly load models + tokenizer so they're ready before first transcription.
+            logger.info("[MODEL] Post-init modelState=\(String(describing: kit.modelState))")
+
+            try await kit.loadModels()
+            logger.info("[MODEL] Post-loadModels modelState=\(String(describing: kit.modelState))")
+
+            // Ensure the tokenizer is loaded — without it, token IDs can't be decoded to text
+            try await kit.loadTokenizerIfNeeded()
+            logger.info("[MODEL] Post-loadTokenizer tokenizer=\(kit.tokenizer == nil ? "nil" : "loaded")")
+
             whisperKit = kit
+
+            // --- Model diagnostics ---
+            logger.info("[MODEL] modelVariant=\(String(describing: kit.modelVariant))")
+            logger.info("[MODEL] modelFolder=\(kit.modelFolder?.path ?? "nil")")
+            logger.info("[MODEL] featureExtractor=\(type(of: kit.featureExtractor))")
+            logger.info("[MODEL] audioEncoder=\(type(of: kit.audioEncoder))")
+            logger.info("[MODEL] textDecoder=\(type(of: kit.textDecoder))")
+            logger.info("[MODEL] isRunningOnSimulator=\(WhisperKit.isRunningOnSimulator)")
+            // --- End model diagnostics ---
+
             modelStatus = .ready
             state = .idle
             logger.info("WhisperKit model ready")
@@ -71,67 +97,33 @@ public final class WhisperVoiceInputService: VoiceInputServiceProtocol, @uncheck
             try await prepareModel()
         }
 
-        logger.debug("Starting audio capture")
-        audioSamples = []
+        logger.debug("Starting audio capture via AVAudioRecorder")
 
-        let engine = AVAudioEngine()
-        let inputNode = engine.inputNode
-        let recordingFormat = inputNode.outputFormat(forBus: 0)
+        // Configure audio session
+        let session = AVAudioSession.sharedInstance()
+        try session.setCategory(.playAndRecord, options: [.defaultToSpeaker])
+        try session.setActive(true)
 
-        // Target 16kHz mono for Whisper
-        guard let targetFormat = AVAudioFormat(
-            commonFormat: .pcmFormatFloat32,
-            sampleRate: 16000,
-            channels: 1,
-            interleaved: false
-        ) else {
-            throw VoiceInputError.recordingFailed("Cannot create target audio format")
+        // Record as 16-bit PCM at 48 kHz — the Simulator's native hardware rate.
+        // Recording at the native rate avoids real-time resampling artifacts on the
+        // Simulator. WhisperKit's transcribe(audioPath:) handles 48→16 kHz conversion
+        // internally with proper filtering.
+        let settings: [String: Any] = [
+            AVFormatIDKey: Int(kAudioFormatLinearPCM),
+            AVSampleRateKey: 48000.0,
+            AVNumberOfChannelsKey: 1,
+            AVLinearPCMBitDepthKey: 16,
+            AVLinearPCMIsFloatKey: false,
+            AVLinearPCMIsBigEndianKey: false,
+        ]
+
+        let rec = try AVAudioRecorder(url: recordingURL, settings: settings)
+        guard rec.record() else {
+            throw VoiceInputError.recordingFailed("AVAudioRecorder.record() returned false")
         }
-
-        guard let converter = AVAudioConverter(from: recordingFormat, to: targetFormat) else {
-            throw VoiceInputError.recordingFailed("Cannot create audio converter")
-        }
-
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
-            guard let self else { return }
-
-            let frameCount = AVAudioFrameCount(
-                Double(buffer.frameLength) * 16000 / recordingFormat.sampleRate
-            )
-            guard frameCount > 0 else { return }
-
-            guard let convertedBuffer = AVAudioPCMBuffer(
-                pcmFormat: targetFormat,
-                frameCapacity: frameCount
-            ) else { return }
-
-            var error: NSError?
-            converter.convert(to: convertedBuffer, error: &error) { _, outStatus in
-                outStatus.pointee = .haveData
-                return buffer
-            }
-
-            if let channelData = convertedBuffer.floatChannelData?[0] {
-                let samples = Array(UnsafeBufferPointer(
-                    start: channelData,
-                    count: Int(convertedBuffer.frameLength)
-                ))
-                self.audioSamples.append(contentsOf: samples)
-            }
-        }
-
-        do {
-            let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.playAndRecord, mode: .default)
-            try audioSession.setActive(true)
-            try engine.start()
-        } catch {
-            throw VoiceInputError.recordingFailed(error.localizedDescription)
-        }
-
-        audioEngine = engine
+        recorder = rec
         state = .recording
-        logger.info("Audio capture started")
+        logger.info("Audio capture started (AVAudioRecorder, 48 kHz)")
         #else
         throw VoiceInputError.recordingFailed("Audio recording not available on this platform")
         #endif
@@ -141,15 +133,44 @@ public final class WhisperVoiceInputService: VoiceInputServiceProtocol, @uncheck
         #if canImport(AVFoundation) && !os(macOS)
         logger.debug("Stopping audio capture")
 
-        audioEngine?.inputNode.removeTap(onBus: 0)
-        audioEngine?.stop()
-        audioEngine = nil
+        guard let rec = recorder else {
+            state = .error("No active recorder")
+            throw VoiceInputError.recordingFailed("No active recorder")
+        }
 
+        rec.stop()
+        recorder = nil
         state = .transcribing
 
-        guard !audioSamples.isEmpty else {
+        // Quick check: does the file exist and have content?
+        let fileSize = (try? FileManager.default.attributesOfItem(atPath: recordingURL.path)[.size] as? Int) ?? 0
+        logger.info("[AUDIO] WAV file: \(fileSize) bytes")
+        guard fileSize > 44 else { // 44 = WAV header only, no audio data
             state = .idle
+            logger.error("[AUDIO] WAV file is empty (header only)")
             return ""
+        }
+
+        // Read file to log audio diagnostics (but WhisperKit will read it independently)
+        do {
+            let file = try AVAudioFile(forReading: recordingURL)
+            let frameCount = AVAudioFrameCount(file.length)
+            let sr = file.processingFormat.sampleRate
+            let ch = file.processingFormat.channelCount
+            let duration = Double(frameCount) / sr
+            logger.info("[AUDIO] format: \(Int(sr)) Hz, \(ch) ch, \(frameCount) frames (\(String(format: "%.1f", duration))s)")
+
+            if let buffer = AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: frameCount) {
+                try file.read(into: buffer)
+                if let floatData = buffer.floatChannelData?[0] {
+                    let samples = UnsafeBufferPointer(start: floatData, count: Int(buffer.frameLength))
+                    let absMax = samples.map { abs($0) }.max() ?? 0
+                    let rms = sqrt(samples.map { $0 * $0 }.reduce(0, +) / Float(samples.count))
+                    logger.info("[AUDIO] absMax=\(String(format: "%.4f", absMax)) rms=\(String(format: "%.6f", rms))")
+                }
+            }
+        } catch {
+            logger.error("[AUDIO] Could not read WAV for diagnostics: \(error.localizedDescription)")
         }
 
         guard let whisperKit else {
@@ -157,15 +178,43 @@ public final class WhisperVoiceInputService: VoiceInputServiceProtocol, @uncheck
             throw VoiceInputError.modelLoadFailed("WhisperKit not initialised")
         }
 
+        // Log model state before transcription
+        logger.info("[PRE-TRANSCRIBE] modelState=\(String(describing: whisperKit.modelState))")
+        logger.info("[PRE-TRANSCRIBE] tokenizer=\(whisperKit.tokenizer == nil ? "nil" : "loaded")")
+
         do {
-            let results = try await whisperKit.transcribe(audioArray: audioSamples)
+            let options = DecodingOptions(
+                language: "en",
+                temperature: 0.0,
+                temperatureFallbackCount: 3
+            )
+
+            // Use file-based transcription — let WhisperKit handle all audio
+            // loading, resampling, and preprocessing internally.
+            logger.info("[TRANSCRIBE] Calling transcribe(audioPath:) with file-based input")
+            let results = try await whisperKit.transcribe(
+                audioPath: recordingURL.path,
+                decodeOptions: options
+            )
+
             let text = results.map(\.text).joined(separator: " ").trimmingCharacters(in: .whitespacesAndNewlines)
-            audioSamples = []
             state = .result(text)
-            logger.info("Transcription complete: \(text.prefix(50))...")
+            logger.info("Transcription complete (\(results.count) segments): \(text.prefix(120))...")
+
+            // Log per-segment details
+            for (i, result) in results.enumerated() {
+                logger.info("[DIAG] result[\(i)]: lang=\(result.language) segments=\(result.segments.count) text='\(result.text.prefix(80))'")
+                for (j, seg) in result.segments.enumerated() {
+                    logger.info("[DIAG]   seg[\(j)]: avgLogProb=\(String(format: "%.3f", seg.avgLogprob)) noSpeechProb=\(String(format: "%.3f", seg.noSpeechProb)) compression=\(String(format: "%.2f", seg.compressionRatio)) text='\(seg.text.prefix(60))'")
+                }
+            }
+
+            // Log timings
+            let timings = results.first?.timings
+            logger.info("[TIMINGS] audioLoading=\(String(format: "%.2f", timings?.audioLoading ?? 0))s encoding=\(String(format: "%.2f", timings?.encoding ?? 0))s decoding=\(String(format: "%.2f", timings?.decodingLoop ?? 0))s")
+
             return text
         } catch {
-            audioSamples = []
             state = .error(error.localizedDescription)
             logger.error("Transcription failed: \(error.localizedDescription)")
             throw VoiceInputError.transcriptionFailed(error.localizedDescription)
@@ -178,11 +227,9 @@ public final class WhisperVoiceInputService: VoiceInputServiceProtocol, @uncheck
     public func cancelRecording() {
         logger.debug("Cancelling recording")
         #if canImport(AVFoundation) && !os(macOS)
-        audioEngine?.inputNode.removeTap(onBus: 0)
-        audioEngine?.stop()
-        audioEngine = nil
+        recorder?.stop()
+        recorder = nil
         #endif
-        audioSamples = []
         state = .idle
     }
 

@@ -6,12 +6,14 @@ import DesignSystem
 public struct RunFlowCoordinator: View {
     @State private var viewModel: RunFlowViewModel
     @Environment(\.dismiss) private var dismiss
+    private let onBuildNew: (() -> Void)?
 
     public init(
         protocolRepository: any ProtocolRepositoryProtocol,
         runRepository: any RunRepositoryProtocol,
         safetySystem: (any SafetySystemProtocol)? = nil,
-        voiceInputService: (any VoiceInputServiceProtocol)? = nil
+        voiceInputService: (any VoiceInputServiceProtocol)? = nil,
+        onBuildNew: (() -> Void)? = nil
     ) {
         _viewModel = State(initialValue: RunFlowViewModel(
             protocolRepository: protocolRepository,
@@ -19,11 +21,12 @@ public struct RunFlowCoordinator: View {
             safetySystem: safetySystem,
             voiceInputService: voiceInputService
         ))
+        self.onBuildNew = onBuildNew
     }
 
     public var body: some View {
         NavigationStack(path: $viewModel.navigationPath) {
-            ProtocolSelectionView(viewModel: viewModel)
+            ProtocolSelectionView(viewModel: viewModel, onBuildNew: onBuildNew)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Close") {
