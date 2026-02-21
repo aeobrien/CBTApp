@@ -22,6 +22,7 @@
 		5AC72F573956CB9CD8EDC002 /* EvidenceTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65CC4639543644704371D6E /* EvidenceTestView.swift */; };
 		6A7FABDEE4AFAE2045B0F30F /* CBTAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E37869F06042DF00E94F5FBE /* CBTAppTests.swift */; };
 		90D3A38FAE736A91C2E86091 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = C81CBC8015BD00F86C25EE1F /* Data */; };
+		AC2C7C411EA9FF51FEBE84A2 /* VoiceTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4217A03D7F73016927F5431F /* VoiceTestView.swift */; };
 		AECF9132F13196752A754665 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = E4527E8AC35EA964D5598860 /* Utilities */; };
 		B04D7B2D3F1EB0D447C48E0B /* InterventionLibraryTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9071EDDC57AD38C8C5C9A546 /* InterventionLibraryTestView.swift */; };
 		CCDD17A963DC257B50C44B7A /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = F5D492A133F2C14BED7CEF60 /* Domain */; };
@@ -45,6 +46,7 @@
 		0535C4FCF2964B22FC638FE3 /* CBTAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CBTAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BADEE2E3185C9281230883C /* CBTApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBTApp.swift; sourceTree = "<group>"; };
 		2B7BDBD956ED2DAA4A4504E5 /* WorkshopTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkshopTestView.swift; sourceTree = "<group>"; };
+		4217A03D7F73016927F5431F /* VoiceTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceTestView.swift; sourceTree = "<group>"; };
 		4A7CE4D585756CC50EABEFE4 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DesignSystem; path = Packages/DesignSystem; sourceTree = SOURCE_ROOT; };
 		5DBF02960B831D1572739802 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Features; path = Packages/Features; sourceTree = SOURCE_ROOT; };
 		6B0F3A14E17BFE3665826699 /* ValidationTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationTestView.swift; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 				98E9BFCC974D3CDB44B6165C /* ProtocolEngineTestView.swift */,
 				B5A2AC6CD0BBD13673648607 /* SafetyTestView.swift */,
 				6B0F3A14E17BFE3665826699 /* ValidationTestView.swift */,
+				4217A03D7F73016927F5431F /* VoiceTestView.swift */,
 				2B7BDBD956ED2DAA4A4504E5 /* WorkshopTestView.swift */,
 			);
 			name = Sources;
@@ -251,6 +254,7 @@
 				DF8427E14391C1C766AA9787 /* ProtocolEngineTestView.swift in Sources */,
 				096DB76A0AA5A5173B2CC96B /* SafetyTestView.swift in Sources */,
 				FBCF8664AA009B9851C0B3B9 /* ValidationTestView.swift in Sources */,
+				AC2C7C411EA9FF51FEBE84A2 /* VoiceTestView.swift in Sources */,
 				164C98A334E6753D424A2A27 /* WorkshopTestView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -338,6 +342,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CBT;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CBT uses the microphone for voice-to-text input during protocol runs and workshop sessions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -464,6 +469,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CBT;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CBT uses the microphone for voice-to-text input during protocol runs and workshop sessions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -44,6 +44,7 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_CFBundleDisplayName: "CBT"
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "CBT uses the microphone for voice-to-text input during protocol runs and workshop sessions."
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.cbt.app
         MARKETING_VERSION: "0.1.0"
