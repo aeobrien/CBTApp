@@ -63,6 +63,7 @@ struct Stage6ExperimentView: View {
                     TextField("e.g. If I speak up, everyone will judge me", text: $viewModel.experimentPrediction, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(1...3)
+                        .voiceInput(text: $viewModel.experimentPrediction, voiceService: viewModel.voiceInputService)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -94,6 +95,7 @@ struct Stage6ExperimentView: View {
                     TextField("e.g. At least one person responds positively", text: $viewModel.experimentSuccessCriteria, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(1...3)
+                        .voiceInput(text: $viewModel.experimentSuccessCriteria, voiceService: viewModel.voiceInputService)
                 }
             }
             .padding()

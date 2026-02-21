@@ -42,6 +42,7 @@ struct Stage4TargetBeliefView: View {
             TextField("e.g. I'm not good enough", text: $viewModel.confirmedTargetBelief, axis: .vertical)
                 .textFieldStyle(.roundedBorder)
                 .lineLimit(1...3)
+                .voiceInput(text: $viewModel.confirmedTargetBelief, voiceService: viewModel.voiceInputService)
 
             Text("Edit the belief above until it captures the core pattern.")
                 .font(.caption)

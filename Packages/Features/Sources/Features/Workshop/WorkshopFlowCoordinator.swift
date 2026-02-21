@@ -15,12 +15,14 @@ public struct WorkshopFlowCoordinator: View {
         agentService: any AgentServiceProtocol,
         protocolRepository: any ProtocolRepositoryProtocol,
         safetySystem: (any SafetySystemProtocol)? = nil,
+        voiceInputService: (any VoiceInputServiceProtocol)? = nil,
         existingProtocol: CBTProtocol? = nil
     ) {
         _viewModel = State(initialValue: WorkshopFlowViewModel(
             agentService: agentService,
             protocolRepository: protocolRepository,
             safetySystem: safetySystem,
+            voiceInputService: voiceInputService,
             existingProtocol: existingProtocol
         ))
     }

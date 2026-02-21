@@ -47,6 +47,7 @@ struct OutcomeView: View {
                     TextField("Any insights from this run...", text: $viewModel.learningNote, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(2...4)
+                        .voiceInput(text: $viewModel.learningNote, voiceService: viewModel.voiceInputService)
                 }
 
                 // Forward plan
@@ -56,6 +57,7 @@ struct OutcomeView: View {
                     TextField("Next time I'll try...", text: $viewModel.forwardPlan, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(2...4)
+                        .voiceInput(text: $viewModel.forwardPlan, voiceService: viewModel.voiceInputService)
                 }
             }
             .padding(CBTSpacing.md)

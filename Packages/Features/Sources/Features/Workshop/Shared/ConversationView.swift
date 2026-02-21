@@ -47,6 +47,7 @@ struct ConversationView: View {
                 TextField("Type a message...", text: $viewModel.userInput, axis: .vertical)
                     .textFieldStyle(.plain)
                     .lineLimit(1...4)
+                    .voiceInput(text: $viewModel.userInput, voiceService: viewModel.voiceInputService)
 
                 Button {
                     Task { await viewModel.sendMessage() }

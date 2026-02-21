@@ -10,12 +10,14 @@ public struct RunFlowCoordinator: View {
     public init(
         protocolRepository: any ProtocolRepositoryProtocol,
         runRepository: any RunRepositoryProtocol,
-        safetySystem: (any SafetySystemProtocol)? = nil
+        safetySystem: (any SafetySystemProtocol)? = nil,
+        voiceInputService: (any VoiceInputServiceProtocol)? = nil
     ) {
         _viewModel = State(initialValue: RunFlowViewModel(
             protocolRepository: protocolRepository,
             runRepository: runRepository,
-            safetySystem: safetySystem
+            safetySystem: safetySystem,
+            voiceInputService: voiceInputService
         ))
     }
 

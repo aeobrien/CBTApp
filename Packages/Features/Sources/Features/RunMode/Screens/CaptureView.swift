@@ -16,6 +16,7 @@ struct CaptureView: View {
                     TextField("Describe the situation...", text: $viewModel.situation, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(2...5)
+                        .voiceInput(text: $viewModel.situation, voiceService: viewModel.voiceInputService)
                 }
 
                 // Hot thought
@@ -106,6 +107,7 @@ struct CaptureView: View {
 
             TextField("Or type your own...", text: $viewModel.customHotThought)
                 .textFieldStyle(.roundedBorder)
+                .voiceInput(text: $viewModel.customHotThought, voiceService: viewModel.voiceInputService)
         }
     }
 

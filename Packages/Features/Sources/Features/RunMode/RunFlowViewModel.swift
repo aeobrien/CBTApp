@@ -64,6 +64,9 @@ public final class RunFlowViewModel: RunFlowViewModelProtocol {
     private let safetySystem: any SafetySystemProtocol
     private let logger: ModuleLogger
 
+    /// Optional voice input service for speech-to-text on text fields.
+    public nonisolated(unsafe) var voiceInputService: (any VoiceInputServiceProtocol)?
+
     // MARK: - Navigation
 
     public var navigationPath: [RunFlowStep] = []
@@ -157,11 +160,13 @@ public final class RunFlowViewModel: RunFlowViewModelProtocol {
         protocolRepository: any ProtocolRepositoryProtocol,
         runRepository: any RunRepositoryProtocol,
         safetySystem: (any SafetySystemProtocol)? = nil,
+        voiceInputService: (any VoiceInputServiceProtocol)? = nil,
         logger: ModuleLogger = CBTLogger.logger(for: .runMode)
     ) {
         self.protocolRepository = protocolRepository
         self.runRepository = runRepository
         self.safetySystem = safetySystem ?? MockSafetySystem()
+        self.voiceInputService = voiceInputService
         self.logger = logger
         self.correlationID = String(UUID().uuidString.prefix(8).lowercased())
     }

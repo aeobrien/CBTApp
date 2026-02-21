@@ -22,6 +22,7 @@ struct Stage1CaptureView: View {
                     TextField("e.g. I was about to present at the team meeting...", text: $viewModel.situation, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(2...4)
+                        .voiceInput(text: $viewModel.situation, voiceService: viewModel.voiceInputService)
                 }
 
                 // Hot thought
@@ -34,6 +35,7 @@ struct Stage1CaptureView: View {
                     TextField("e.g. I'm going to mess this up", text: $viewModel.hotThought, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(1...3)
+                        .voiceInput(text: $viewModel.hotThought, voiceService: viewModel.voiceInputService)
                 }
 
                 // Emotion

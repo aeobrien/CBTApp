@@ -5,6 +5,7 @@ import Services
 
 /// Test harness for Workshop Mode using MockAgentService.
 struct WorkshopTestView: View {
+    private let voiceService = WhisperVoiceInputService()
     @State private var showingWorkshop = false
     @State private var showingRevision = false
 
@@ -37,7 +38,8 @@ struct WorkshopTestView: View {
             WorkshopFlowCoordinator(
                 agentService: Self.contextualMock(),
                 protocolRepository: MockProtocolRepository(),
-                safetySystem: SafetySystem()
+                safetySystem: SafetySystem(),
+                voiceInputService: voiceService
             )
         }
         .fullScreenCover(isPresented: $showingRevision) {
@@ -45,6 +47,7 @@ struct WorkshopTestView: View {
                 agentService: Self.contextualMock(),
                 protocolRepository: MockProtocolRepository(),
                 safetySystem: SafetySystem(),
+                voiceInputService: voiceService,
                 existingProtocol: SampleData.allProtocols.first
             )
         }

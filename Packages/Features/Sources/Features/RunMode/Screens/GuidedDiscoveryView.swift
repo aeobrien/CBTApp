@@ -34,6 +34,7 @@ struct GuidedDiscoveryView: View {
                     TextField("If this thought is true, then...", text: $viewModel.predictionResponse, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(2...4)
+                        .voiceInput(text: $viewModel.predictionResponse, voiceService: viewModel.voiceInputService)
                 }
 
                 // Alternative
@@ -43,6 +44,7 @@ struct GuidedDiscoveryView: View {
                     TextField("An alternative perspective might be...", text: $viewModel.alternativeResponse, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(2...4)
+                        .voiceInput(text: $viewModel.alternativeResponse, voiceService: viewModel.voiceInputService)
                 }
             }
             .padding(CBTSpacing.md)

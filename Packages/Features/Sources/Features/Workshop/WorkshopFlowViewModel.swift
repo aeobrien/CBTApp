@@ -17,6 +17,9 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
     private let safetySystem: any SafetySystemProtocol
     private let logger: ModuleLogger
 
+    /// Optional voice input service for speech-to-text on text fields.
+    public nonisolated(unsafe) var voiceInputService: (any VoiceInputServiceProtocol)?
+
     // MARK: - Navigation
 
     public var navigationPath: [WorkshopStage] = []
@@ -104,12 +107,14 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
         agentService: any AgentServiceProtocol,
         protocolRepository: any ProtocolRepositoryProtocol,
         safetySystem: (any SafetySystemProtocol)? = nil,
+        voiceInputService: (any VoiceInputServiceProtocol)? = nil,
         existingProtocol: CBTProtocol? = nil,
         logger: ModuleLogger = CBTLogger.logger(for: .workshop)
     ) {
         self.agentService = agentService
         self.protocolRepository = protocolRepository
         self.safetySystem = safetySystem ?? MockSafetySystem()
+        self.voiceInputService = voiceInputService
         self.existingProtocol = existingProtocol
         self.isRevisionMode = existingProtocol != nil
         self.logger = logger
