@@ -20,6 +20,9 @@ public protocol RunRepositoryProtocol: Sendable {
     /// Delete a run by ID.
     func delete(id: UUID) async throws
 
+    /// Delete all runs for a given protocol.
+    func deleteRuns(forProtocolID protocolID: UUID) async throws
+
     /// Count completed runs for a given protocol.
     func completedRunCount(forProtocolID protocolID: UUID) async throws -> Int
 

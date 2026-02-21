@@ -51,6 +51,19 @@ public actor SwiftDataRunRepository: RunRepositoryProtocol {
         try modelContext.save()
     }
 
+    public func deleteRuns(forProtocolID protocolID: UUID) async throws {
+        let descriptor = FetchDescriptor<PersistedRun>(
+            predicate: #Predicate { $0.protocolID == protocolID }
+        )
+        let runs = try modelContext.fetch(descriptor)
+        for run in runs {
+            modelContext.delete(run)
+        }
+        if !runs.isEmpty {
+            try modelContext.save()
+        }
+    }
+
     public func delete(id: UUID) async throws {
         let descriptor = FetchDescriptor<PersistedRun>(
             predicate: #Predicate { $0.runID == id }

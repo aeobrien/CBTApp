@@ -7,6 +7,7 @@ import Utilities
 
 struct ContentView: View {
     private let logger = CBTLogger.logger(for: .app)
+    private let voiceService = WhisperVoiceInputService()
     @State private var showingRunFlow = false
 
     var body: some View {
@@ -68,6 +69,12 @@ struct ContentView: View {
                     }
                 }
 
+                Section("Voice Input") {
+                    NavigationLink("Voice Test Harness") {
+                        VoiceTestView()
+                    }
+                }
+
                 Section("Sample Protocols") {
                     ForEach(SampleData.allProtocols) { proto in
                         NavigationLink {
@@ -83,6 +90,22 @@ struct ContentView: View {
                             }
                             .padding(.vertical, 2)
                         }
+                    }
+                }
+
+                Section("Settings") {
+                    NavigationLink("Settings") {
+                        SettingsView(viewModel: SettingsViewModel(
+                            protocolRepository: MockProtocolRepository(protocols: SampleData.allProtocols),
+                            runRepository: MockRunRepository()
+                        ))
+                    }
+                }
+
+                Section("Onboarding") {
+                    Button("Reset Onboarding") {
+                        UserDefaults.standard.set(false, forKey: "onboardingCompleted")
+                        logger.info("Onboarding reset — restart app to see onboarding again")
                     }
                 }
 
@@ -102,7 +125,8 @@ struct ContentView: View {
             RunFlowCoordinator(
                 protocolRepository: MockProtocolRepository(protocols: SampleData.allProtocols),
                 runRepository: MockRunRepository(),
-                safetySystem: SafetySystem()
+                safetySystem: SafetySystem(),
+                voiceInputService: voiceService
             )
         }
         .onAppear {
