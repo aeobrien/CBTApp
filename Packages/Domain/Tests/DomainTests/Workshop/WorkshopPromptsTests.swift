@@ -45,4 +45,66 @@ final class WorkshopPromptsTests: XCTestCase {
         let prompt = WorkshopPrompts.systemPrompt(for: .capture, context: context)
         XCTAssertTrue(prompt.contains("CBT"))
     }
+
+    // MARK: - Completion signals
+
+    func testAllGuidedPromptsContainCompletionSignal() {
+        let guidedStages: [WorkshopStage] = [.recurrence, .maintaining, .targetBelief, .experimentDesign]
+        let context = WorkshopContext()
+
+        for stage in guidedStages {
+            let prompt = WorkshopPrompts.systemPrompt(for: stage, context: context)
+            XCTAssertTrue(prompt.contains("COMPLETION"), "Prompt for \(stage.title) should contain COMPLETION section")
+            XCTAssertTrue(prompt.contains("Do not ask further questions"), "Prompt for \(stage.title) should instruct not to ask further questions")
+        }
+    }
+
+    func testCompletionSignalMentionsNextButton() {
+        let guidedStages: [WorkshopStage] = [.recurrence, .maintaining, .targetBelief, .experimentDesign]
+        let context = WorkshopContext()
+
+        for stage in guidedStages {
+            let prompt = WorkshopPrompts.systemPrompt(for: stage, context: context)
+            XCTAssertTrue(prompt.contains("Next"), "Prompt for \(stage.title) should mention Next button")
+        }
+    }
+
+    // MARK: - Recurrence context flows downstream
+
+    func testMaintainingPromptIncludesRecurrenceTriggers() {
+        let context = WorkshopContext(recurrenceTriggers: ["morning meetings", "deadlines"])
+        let prompt = WorkshopPrompts.systemPrompt(for: .maintaining, context: context)
+        XCTAssertTrue(prompt.contains("morning meetings"))
+        XCTAssertTrue(prompt.contains("deadlines"))
+    }
+
+    func testMaintainingPromptIncludesRecurrenceFrequency() {
+        let context = WorkshopContext(recurrenceFrequency: "3 times a week")
+        let prompt = WorkshopPrompts.systemPrompt(for: .maintaining, context: context)
+        XCTAssertTrue(prompt.contains("3 times a week"))
+    }
+
+    func testMaintainingPromptIncludesTimingPattern() {
+        let context = WorkshopContext(recurrenceTimingPattern: "Sunday evenings")
+        let prompt = WorkshopPrompts.systemPrompt(for: .maintaining, context: context)
+        XCTAssertTrue(prompt.contains("Sunday evenings"))
+    }
+
+    func testTargetBeliefPromptIncludesRecurrenceTriggers() {
+        let context = WorkshopContext(recurrenceTriggers: ["presentations"])
+        let prompt = WorkshopPrompts.systemPrompt(for: .targetBelief, context: context)
+        XCTAssertTrue(prompt.contains("presentations"))
+    }
+
+    func testExperimentPromptIncludesRecurrenceTriggers() {
+        let context = WorkshopContext(recurrenceTriggers: ["social events"])
+        let prompt = WorkshopPrompts.systemPrompt(for: .experimentDesign, context: context)
+        XCTAssertTrue(prompt.contains("social events"))
+    }
+
+    func testExperimentPromptIncludesRecurrenceFrequency() {
+        let context = WorkshopContext(recurrenceFrequency: "daily")
+        let prompt = WorkshopPrompts.systemPrompt(for: .experimentDesign, context: context)
+        XCTAssertTrue(prompt.contains("daily"))
+    }
 }

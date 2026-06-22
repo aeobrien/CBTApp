@@ -5,7 +5,8 @@ import Features
 import Services
 import Utilities
 
-struct ContentView: View {
+/// Debug menu — test harness for all modules. Accessible from Settings in DEBUG builds.
+struct DebugMenuView: View {
     private let logger = CBTLogger.logger(for: .app)
     private let voiceService = WhisperVoiceInputService()
     @State private var showingRunFlow = false
@@ -120,7 +121,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationTitle("CBT App")
+            .navigationTitle("Debug Menu")
         }
         .fullScreenCover(isPresented: $showingRunFlow) {
             RunFlowCoordinator(
@@ -146,7 +147,7 @@ struct ContentView: View {
             )
         }
         .task {
-            logger.info("ContentView appeared — \(SampleData.allProtocols.count) sample protocols loaded")
+            logger.info("DebugMenuView appeared — \(SampleData.allProtocols.count) sample protocols loaded")
             // Pre-load Whisper model so voice input is ready instantly
             do {
                 try await voiceService.prepareModel()
@@ -271,5 +272,5 @@ struct ProtocolDetailTestView: View {
 }
 
 #Preview {
-    ContentView()
+    DebugMenuView()
 }

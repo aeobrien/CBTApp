@@ -62,6 +62,7 @@ public struct SafetyBanner: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Safety resources")
+        .accessibilityHint(isExpanded ? "Tap to collapse" : "Tap to show crisis contacts")
     }
 }
 

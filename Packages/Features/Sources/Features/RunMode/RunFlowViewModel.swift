@@ -2,6 +2,7 @@ import Foundation
 import Domain
 import DesignSystem
 import Utilities
+import os
 
 /// Protocol for the RunFlowViewModel, defined so tests can verify behaviour.
 @MainActor
@@ -285,6 +286,9 @@ public final class RunFlowViewModel: RunFlowViewModelProtocol {
     }
 
     public func finishRun() async {
+        let signpostState = CBTSignpost.begin("FinishRun")
+        defer { CBTSignpost.end("FinishRun", signpostState) }
+
         logger.debug("Finishing run", correlationID: correlationID)
         currentRun?.helpfulnessRating = helpfulnessRating
         currentRun?.timestampEnd = Date()

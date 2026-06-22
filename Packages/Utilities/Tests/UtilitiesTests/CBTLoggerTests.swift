@@ -62,4 +62,10 @@ struct CBTLoggerTests {
         logger.debug("Test without correlation ID")
         logger.info("Test without correlation ID")
     }
+
+    @Test("CBTSignpost begin/end does not crash")
+    func signpostSmokeTest() {
+        let state = CBTSignpost.begin("TestInterval")
+        CBTSignpost.end("TestInterval", state)
+    }
 }

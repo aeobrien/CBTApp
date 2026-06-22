@@ -26,6 +26,9 @@ public protocol RunRepositoryProtocol: Sendable {
     /// Count completed runs for a given protocol.
     func completedRunCount(forProtocolID protocolID: UUID) async throws -> Int
 
+    /// Delete all runs across all protocols.
+    func deleteAllRuns() async throws
+
     /// Calculate average emotion change for a protocol's runs.
     func averageEmotionChange(forProtocolID protocolID: UUID) async throws -> Double?
 

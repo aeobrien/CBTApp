@@ -1,12 +1,18 @@
 import Foundation
 import SwiftData
 import Domain
+import os
 
 /// SwiftData implementation of ProtocolRepositoryProtocol.
 @ModelActor
 public actor SwiftDataProtocolRepository: ProtocolRepositoryProtocol {
 
+    private static let signposter = OSSignposter(subsystem: "com.cbt.app", category: .pointsOfInterest)
+
     public func fetchAll(status: ProtocolStatus?) async throws -> [CBTProtocol] {
+        let signpostState = Self.signposter.beginInterval("FetchAllProtocols")
+        defer { Self.signposter.endInterval("FetchAllProtocols", signpostState) }
+
         var descriptor = FetchDescriptor<PersistedProtocol>(
             sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
         )

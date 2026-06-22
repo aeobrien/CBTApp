@@ -116,6 +116,7 @@ public struct CBTTimerView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Timer")
         .accessibilityValue(model.displayTime)
+        .accessibilityAddTraits(.updatesFrequently)
     }
 }
 

@@ -22,6 +22,8 @@ public struct OutcomeTagSelector: View {
                 selection: $selection
             )
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Outcome tags")
     }
 }
 

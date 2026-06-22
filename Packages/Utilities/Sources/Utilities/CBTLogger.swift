@@ -112,3 +112,28 @@ public struct ModuleLogger: Sendable {
         return result
     }
 }
+
+// MARK: - Performance Instrumentation
+
+/// Lightweight wrapper around `OSSignposter` for Instruments > Points of Interest.
+///
+/// Usage:
+/// ```swift
+/// let state = CBTSignpost.begin("GenerateProtocol")
+/// // ... work ...
+/// CBTSignpost.end("GenerateProtocol", state)
+/// ```
+public enum CBTSignpost {
+    private static let pointsOfInterest = OSSignposter(
+        subsystem: CBTLogger.subsystem,
+        category: .pointsOfInterest
+    )
+
+    public static func begin(_ name: StaticString) -> OSSignpostIntervalState {
+        pointsOfInterest.beginInterval(name)
+    }
+
+    public static func end(_ name: StaticString, _ state: OSSignpostIntervalState) {
+        pointsOfInterest.endInterval(name, state)
+    }
+}

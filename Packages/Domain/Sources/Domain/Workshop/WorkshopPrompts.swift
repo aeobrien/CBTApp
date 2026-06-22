@@ -10,6 +10,9 @@ public struct WorkshopContext: Sendable, Equatable {
     public var maintainingBehaviours: [MaintainingBehaviour]
     public var targetBelief: String?
     public var selectedInterventionNames: [String]
+    public var recurrenceTriggers: [String]
+    public var recurrenceFrequency: String?
+    public var recurrenceTimingPattern: String?
 
     public init(
         situation: String? = nil,
@@ -19,7 +22,10 @@ public struct WorkshopContext: Sendable, Equatable {
         emotionIntensity: Int? = nil,
         maintainingBehaviours: [MaintainingBehaviour] = [],
         targetBelief: String? = nil,
-        selectedInterventionNames: [String] = []
+        selectedInterventionNames: [String] = [],
+        recurrenceTriggers: [String] = [],
+        recurrenceFrequency: String? = nil,
+        recurrenceTimingPattern: String? = nil
     ) {
         self.situation = situation
         self.hotThought = hotThought
@@ -29,6 +35,9 @@ public struct WorkshopContext: Sendable, Equatable {
         self.maintainingBehaviours = maintainingBehaviours
         self.targetBelief = targetBelief
         self.selectedInterventionNames = selectedInterventionNames
+        self.recurrenceTriggers = recurrenceTriggers
+        self.recurrenceFrequency = recurrenceFrequency
+        self.recurrenceTimingPattern = recurrenceTimingPattern
     }
 }
 
@@ -86,6 +95,11 @@ public enum WorkshopPrompts {
 
             After gathering enough information (typically 2-3 exchanges), summarise the \
             recurrence pattern you've identified. Start your summary with "So it sounds like..."
+
+            COMPLETION: When you have enough information about triggers, frequency, and timing, \
+            provide a clear summary of the recurrence pattern. End your summary with: \
+            "You can capture the key triggers and patterns below, then tap Next when you're ready." \
+            Do not ask further questions after providing this summary.
             """
         return prompt
     }
@@ -105,6 +119,15 @@ public enum WorkshopPrompts {
         if let situation = context.situation {
             prompt += "Situation: \"\(situation)\"\n"
         }
+        if !context.recurrenceTriggers.isEmpty {
+            prompt += "Recurrence triggers identified: \(context.recurrenceTriggers.joined(separator: ", "))\n"
+        }
+        if let freq = context.recurrenceFrequency, !freq.isEmpty {
+            prompt += "Recurrence frequency: \(freq)\n"
+        }
+        if let timing = context.recurrenceTimingPattern, !timing.isEmpty {
+            prompt += "Timing pattern: \(timing)\n"
+        }
 
         prompt += """
             \n\
@@ -115,9 +138,15 @@ public enum WorkshopPrompts {
             - Does that help in the moment? What happens afterwards?
             - Are there things you avoid doing because of this pattern?
 
-            Help identify the maintaining cycle: the behaviour that provides short-term \
-            relief but has a long-term cost. After 2-3 exchanges, summarise the maintaining \
-            behaviours you've identified as a bulleted list.
+            For each behaviour, identify both the short-term relief it provides and the \
+            long-term cost. Help identify the maintaining cycle. After 2-3 exchanges, \
+            summarise the maintaining behaviours you've identified as a bulleted list, \
+            noting the short-term relief and long-term cost for each.
+
+            COMPLETION: When you have identified the key maintaining behaviours with their \
+            short-term relief and long-term costs, provide a clear summary. End with: \
+            "Add the behaviours you've identified below, then tap Next when you're ready." \
+            Do not ask further questions after providing this summary.
             """
         return prompt
     }
@@ -138,6 +167,9 @@ public enum WorkshopPrompts {
         if let situation = context.situation {
             prompt += "Situation: \"\(situation)\"\n"
         }
+        if !context.recurrenceTriggers.isEmpty {
+            prompt += "Recurrence triggers: \(context.recurrenceTriggers.joined(separator: ", "))\n"
+        }
 
         prompt += """
             \n\
@@ -151,6 +183,10 @@ public enum WorkshopPrompts {
             "It sounds like the core belief might be: '...'" and ask the user if that \
             captures it. The belief should be a general, absolute statement (e.g. \
             "I'm not good enough" rather than "I failed this exam").
+
+            COMPLETION: When the user confirms the target belief, provide it clearly. \
+            End with: "Type the belief in below, then tap Next when you're ready." \
+            Do not ask further questions after the user confirms.
             """
         return prompt
     }
@@ -170,6 +206,12 @@ public enum WorkshopPrompts {
         if let situation = context.situation {
             prompt += "Typical situation: \"\(situation)\"\n"
         }
+        if !context.recurrenceTriggers.isEmpty {
+            prompt += "Known triggers: \(context.recurrenceTriggers.joined(separator: ", "))\n"
+        }
+        if let freq = context.recurrenceFrequency, !freq.isEmpty {
+            prompt += "Pattern frequency: \(freq)\n"
+        }
 
         prompt += """
             \n\
@@ -182,6 +224,11 @@ public enum WorkshopPrompts {
 
             Make the experiment concrete, doable within a week, and safe. After designing \
             it together, summarise: prediction, steps, measurement, and success criteria.
+
+            COMPLETION: When you have a complete experiment design, provide a clear summary \
+            with prediction, steps, measurement, and success criteria. End with: \
+            "Fill in the experiment details below, then tap Next when you're ready." \
+            Do not ask further questions after providing the summary.
             """
         return prompt
     }

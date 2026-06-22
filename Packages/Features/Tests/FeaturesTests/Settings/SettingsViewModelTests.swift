@@ -82,4 +82,57 @@ final class SettingsViewModelTests: XCTestCase {
         let savedRuns = try await runRepo.fetchRuns(forProtocolID: proto.id)
         XCTAssertTrue(savedRuns.isEmpty)
     }
+
+    // MARK: - App Lock Toggle
+
+    func testAppLockToggleStoresPreference() async {
+        let (vm, _, _) = makeViewModel()
+
+        vm.appLockEnabled = true
+        // On CI/test environments without biometrics, it will auto-disable
+        // Just verify the preference was written
+        let stored = UserDefaults.standard.bool(forKey: "appLockEnabled")
+        XCTAssertEqual(stored, vm.appLockEnabled)
+    }
+
+    // MARK: - Appearance Override
+
+    func testAppearanceOverrideStoresPreference() async {
+        let (vm, _, _) = makeViewModel()
+
+        vm.appearanceOverride = "dark"
+        XCTAssertEqual(UserDefaults.standard.string(forKey: "appearanceOverride"), "dark")
+
+        vm.appearanceOverride = "light"
+        XCTAssertEqual(UserDefaults.standard.string(forKey: "appearanceOverride"), "light")
+
+        vm.appearanceOverride = "system"
+        XCTAssertEqual(UserDefaults.standard.string(forKey: "appearanceOverride"), "system")
+    }
+
+    // MARK: - Workshop Cooldown
+
+    func testWorkshopCooldownStoresPreference() async {
+        let (vm, _, _) = makeViewModel()
+
+        vm.workshopCooldownHours = 24
+        XCTAssertEqual(UserDefaults.standard.integer(forKey: "workshopCooldownHours"), 24)
+
+        vm.workshopCooldownHours = 0
+        XCTAssertEqual(UserDefaults.standard.integer(forKey: "workshopCooldownHours"), 0)
+    }
+
+    // MARK: - Reset Metrics
+
+    func testResetAllRunDataDeletesRuns() async throws {
+        let proto = SampleData.lateNightRumination
+        let run = Run(protocolID: proto.id, protocolVersion: "1.0.0", completionStatus: .completed)
+        let (vm, _, runRepo) = makeViewModel(protocols: [proto], runs: [run])
+
+        await vm.resetAllRunData()
+
+        XCTAssertTrue(vm.resetSuccess)
+        let remaining = try await runRepo.fetchRecent(limit: 100)
+        XCTAssertTrue(remaining.isEmpty)
+    }
 }

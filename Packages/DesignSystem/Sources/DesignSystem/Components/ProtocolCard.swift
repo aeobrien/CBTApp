@@ -51,6 +51,8 @@ public struct ProtocolCard: View {
                 .shadow(color: .black.opacity(0.06), radius: 4, y: 2)
         )
         .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(name), \(statusLabel)")
+        .accessibilityValue(summary)
     }
 }
 

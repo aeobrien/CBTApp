@@ -38,6 +38,7 @@ public struct SelectableChip: View {
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .accessibilityLabel(label)
+        .accessibilityHint("Double tap to toggle")
     }
 }
 

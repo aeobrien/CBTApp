@@ -59,6 +59,40 @@ public enum WorkshopStage: Int, CaseIterable, Sendable, Hashable {
         }
     }
 
+    /// Plain-language explanation of what this guided discovery stage does.
+    /// Returns nil for non-guided stages.
+    public var introExplanation: String? {
+        switch self {
+        case .recurrence:
+            return "We'll explore when and where this pattern shows up — how often it happens, what triggers it, and whether there's a timing pattern."
+        case .maintaining:
+            return "Now we'll look at what keeps this pattern going — the behaviours that feel helpful in the moment but maintain the cycle long-term."
+        case .targetBelief:
+            return "Let's uncover the core belief driving this pattern — the deeper assumption beneath the surface thoughts."
+        case .experimentDesign:
+            return "Finally, we'll design a concrete experiment to test whether the belief holds up in practice."
+        default:
+            return nil
+        }
+    }
+
+    /// Describes what "done" looks like for this stage, so the user knows when to tap Next.
+    /// Returns nil for non-guided stages.
+    public var goalDescription: String? {
+        switch self {
+        case .recurrence:
+            return "Once you've discussed this, capture the triggers and patterns below, then tap Next."
+        case .maintaining:
+            return "When you've identified the key behaviours, add them below, then tap Next."
+        case .targetBelief:
+            return "Once you've agreed on a core belief statement, type it in below, then tap Next."
+        case .experimentDesign:
+            return "When you've designed the experiment, fill in the details below, then tap Next."
+        default:
+            return nil
+        }
+    }
+
     /// Display number matching the roadmap (e.g. "7.5" for standardised measures).
     public var stageNumber: String {
         switch self {

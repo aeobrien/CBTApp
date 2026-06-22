@@ -15,6 +15,14 @@ struct ConversationView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 12) {
+                        if let intro = viewModel.currentStage.introExplanation {
+                            StageIntroCard(
+                                intro: intro,
+                                goal: viewModel.currentStage.goalDescription
+                            )
+                            .id("intro")
+                        }
+
                         ForEach(
                             Array(viewModel.conversationMessages.enumerated()),
                             id: \.offset
@@ -124,6 +132,30 @@ private struct TypingIndicator: View {
                 withAnimation { dotCount = (dotCount + 1) % 3 }
             }
         }
+    }
+}
+
+// MARK: - Stage Intro Card
+
+private struct StageIntroCard: View {
+    let intro: String
+    let goal: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(intro)
+                .font(.subheadline)
+
+            if let goal {
+                Text(goal)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(CBTColors.accent.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 

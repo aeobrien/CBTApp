@@ -1,7 +1,8 @@
 import Foundation
 
 /// Result of evaluating whether a protocol is ready for completion.
-public struct CompletionCandidate: Sendable, Equatable {
+public struct CompletionCandidate: Sendable, Equatable, Identifiable {
+    public var id: String { reason }
     public var isCandidate: Bool
     public var reason: String
     public var suggestedKeyTrigger: String?

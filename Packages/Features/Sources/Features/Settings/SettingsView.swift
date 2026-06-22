@@ -37,6 +37,41 @@ public struct SettingsView: View {
                 }
             }
 
+            // MARK: - Security
+            Section("Security") {
+                Toggle("App Lock (Face ID / Passcode)", isOn: $viewModel.appLockEnabled)
+
+                if let message = viewModel.appLockUnavailableMessage {
+                    Label(message, systemImage: "exclamationmark.triangle.fill")
+                        .foregroundStyle(CBTColors.negative)
+                        .font(CBTTypography.caption)
+                }
+            }
+
+            // MARK: - Appearance
+            Section("Appearance") {
+                Picker("Theme", selection: $viewModel.appearanceOverride) {
+                    Text("System").tag("system")
+                    Text("Light").tag("light")
+                    Text("Dark").tag("dark")
+                }
+            }
+
+            // MARK: - Workshop
+            Section("Workshop") {
+                Stepper(
+                    "Cooldown: \(viewModel.workshopCooldownHours == 0 ? "Off" : "\(viewModel.workshopCooldownHours)h")",
+                    value: $viewModel.workshopCooldownHours,
+                    in: 0...72,
+                    step: 4
+                )
+                if viewModel.workshopCooldownHours > 0 {
+                    Text("Wait \(viewModel.workshopCooldownHours) hours between workshops to allow time for reflection.")
+                        .font(CBTTypography.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
             // MARK: - Data Management
             Section("Data") {
                 Button {
@@ -52,8 +87,20 @@ public struct SettingsView: View {
                     Label("Import Protocols", systemImage: "square.and.arrow.down")
                 }
 
+                Button(role: .destructive) {
+                    viewModel.showingResetConfirmation = true
+                } label: {
+                    Label("Reset All Run Data", systemImage: "trash")
+                }
+
                 if viewModel.importSuccess {
                     Label("Import successful", systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(CBTColors.positive)
+                        .font(CBTTypography.caption)
+                }
+
+                if viewModel.resetSuccess {
+                    Label("Run data reset", systemImage: "checkmark.circle.fill")
                         .foregroundStyle(CBTColors.positive)
                         .font(CBTTypography.caption)
                 }
@@ -63,6 +110,21 @@ public struct SettingsView: View {
                         .foregroundStyle(CBTColors.negative)
                         .font(CBTTypography.caption)
                 }
+            }
+
+            // MARK: - Data Disclosure
+            Section("What Gets Sent to the AI Agent") {
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("Situation text", systemImage: "text.quote")
+                    Label("Hot thought", systemImage: "brain.head.profile")
+                    Label("Emotion labels (no intensity)", systemImage: "heart")
+                    Label("Intervention type", systemImage: "wrench.and.screwdriver")
+                }
+                .font(CBTTypography.caption)
+
+                Text("Your data is sent only to OpenAI's API and is not stored by them under their API data policy.")
+                    .font(CBTTypography.caption)
+                    .foregroundStyle(.secondary)
             }
 
             // MARK: - Protocol Management
@@ -132,6 +194,14 @@ public struct SettingsView: View {
             case .failure:
                 break
             }
+        }
+        .alert("Reset All Run Data?", isPresented: $viewModel.showingResetConfirmation) {
+            Button("Reset", role: .destructive) {
+                Task { await viewModel.resetAllRunData() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will permanently delete all run history and metrics. Your protocols will not be affected.")
         }
         .alert(
             "Delete Protocol?",

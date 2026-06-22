@@ -48,14 +48,26 @@ struct Stage3MaintainingView: View {
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(viewModel.identifiedBehaviours) { behaviour in
-                    HStack {
-                        Text(behaviour.type.displayName)
-                            .font(.subheadline)
-                        Spacer()
-                        Button {
-                            viewModel.identifiedBehaviours.removeAll { $0.id == behaviour.id }
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(behaviour.type.displayName)
+                                .font(.subheadline)
+                            Spacer()
+                            Button {
+                                viewModel.identifiedBehaviours.removeAll { $0.id == behaviour.id }
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        if !behaviour.shortTermRelief.isEmpty {
+                            Text("Relief: \(behaviour.shortTermRelief)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        if !behaviour.longTermCost.isEmpty {
+                            Text("Cost: \(behaviour.longTermCost)")
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -72,7 +84,7 @@ struct Stage3MaintainingView: View {
         .padding()
         .sheet(isPresented: $showBehaviourPicker) {
             BehaviourPickerSheet(identifiedBehaviours: $viewModel.identifiedBehaviours)
-                .presentationDetents([.medium])
+                .presentationDetents([.medium, .large])
         }
     }
 }
@@ -82,24 +94,56 @@ struct Stage3MaintainingView: View {
 private struct BehaviourPickerSheet: View {
     @Binding var identifiedBehaviours: [MaintainingBehaviour]
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedType: MaintainingBehaviourType?
+    @State private var shortTermRelief: String = ""
+    @State private var longTermCost: String = ""
 
     var body: some View {
         NavigationStack {
-            List(MaintainingBehaviourType.allCases) { behaviourType in
-                let isSelected = identifiedBehaviours.contains { $0.type == behaviourType }
-                Button {
-                    if isSelected {
-                        identifiedBehaviours.removeAll { $0.type == behaviourType }
-                    } else {
-                        identifiedBehaviours.append(MaintainingBehaviour(type: behaviourType))
+            List {
+                if let selected = selectedType {
+                    Section("Details for \(selected.displayName)") {
+                        TextField("Short-term relief (optional)", text: $shortTermRelief)
+                        TextField("Long-term cost (optional)", text: $longTermCost)
+                        Button("Add") {
+                            identifiedBehaviours.append(MaintainingBehaviour(
+                                type: selected,
+                                shortTermRelief: shortTermRelief,
+                                longTermCost: longTermCost
+                            ))
+                            selectedType = nil
+                            shortTermRelief = ""
+                            longTermCost = ""
+                        }
                     }
-                } label: {
-                    HStack {
-                        Text(behaviourType.displayName)
-                        Spacer()
-                        if isSelected {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(CBTColors.accent)
+                }
+
+                Section("Behaviour types") {
+                    ForEach(MaintainingBehaviourType.allCases) { behaviourType in
+                        let isSelected = identifiedBehaviours.contains { $0.type == behaviourType }
+                        Button {
+                            if isSelected {
+                                identifiedBehaviours.removeAll { $0.type == behaviourType }
+                                if selectedType == behaviourType {
+                                    selectedType = nil
+                                }
+                            } else {
+                                selectedType = behaviourType
+                                shortTermRelief = ""
+                                longTermCost = ""
+                            }
+                        } label: {
+                            HStack {
+                                Text(behaviourType.displayName)
+                                Spacer()
+                                if isSelected {
+                                    Image(systemName: "checkmark")
+                                        .foregroundStyle(CBTColors.accent)
+                                } else if selectedType == behaviourType {
+                                    Image(systemName: "pencil")
+                                        .foregroundStyle(CBTColors.accent)
+                                }
+                            }
                         }
                     }
                 }

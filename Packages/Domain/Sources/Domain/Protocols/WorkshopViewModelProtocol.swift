@@ -44,6 +44,12 @@ public protocol WorkshopFlowViewModelProtocol: AnyObject {
     var isAgentTyping: Bool { get }
     func sendMessage() async
 
+    // MARK: - Stage 2 output: Recurrence
+
+    var recurrenceTriggers: [String] { get set }
+    var recurrenceFrequency: String { get set }
+    var recurrenceTimingPattern: String { get set }
+
     // MARK: - Stage 5: Interventions
 
     var availableInterventions: [InterventionTemplate] { get }

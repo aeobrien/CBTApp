@@ -43,6 +43,8 @@ public struct CBTChecklist: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(checkedIndices.contains(index) ? .isSelected : [])
+                .accessibilityLabel(item)
+                .accessibilityValue(checkedIndices.contains(index) ? "Checked" : "Unchecked")
             }
         }
     }

@@ -45,6 +45,7 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_CFBundleDisplayName: "CBT"
         INFOPLIST_KEY_NSMicrophoneUsageDescription: "CBT uses the microphone for voice-to-text input during protocol runs and workshop sessions."
+        INFOPLIST_KEY_NSFaceIDUsageDescription: "CBT uses Face ID to lock the app and protect your data."
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.cbt.app
         MARKETING_VERSION: "0.1.0"
@@ -63,12 +64,6 @@ targets:
         product: Domain
       - package: Data
         product: Data
-      - package: Services
-        product: Services
-      - package: DesignSystem
-        product: DesignSystem
-      - package: Features
-        product: Features
       - package: Utilities
         product: Utilities
     settings:

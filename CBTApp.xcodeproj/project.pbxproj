@@ -7,26 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		081ED3201BAFBE3FF7C57D91 /* Features in Frameworks */ = {isa = PBXBuildFile; productRef = 5623C494F00451DE642B71D7 /* Features */; };
 		096DB76A0AA5A5173B2CC96B /* SafetyTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2AC6CD0BBD13673648607 /* SafetyTestView.swift */; };
 		0E82EBC77F252C171857ED4B /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 10BCA44A6B559AD8B4D01446 /* DesignSystem */; };
 		141F3792AF415EB77873DE69 /* AgentTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22066B466D6338A732ACE39 /* AgentTestView.swift */; };
 		164C98A334E6753D424A2A27 /* WorkshopTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B7BDBD956ED2DAA4A4504E5 /* WorkshopTestView.swift */; };
 		2B6DB6F51E57DF59560FC5E1 /* Features in Frameworks */ = {isa = PBXBuildFile; productRef = B95B2B5379141BE27A275F67 /* Features */; };
-		389435B2DE121F75CE8C737D /* Services in Frameworks */ = {isa = PBXBuildFile; productRef = 91C04A5666D98A717350B142 /* Services */; };
+		310BDAF980B88070FB937C9A /* ProtocolDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A09AD67572C9096039B94EB9 /* ProtocolDetailView.swift */; };
+		389435B2DE121F75CE8C737D /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = E4527E8AC35EA964D5598860 /* Utilities */; };
 		3C02F8CD679D766F0A79F8FC /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = 039AF293332F5C8C12DEA82E /* Data */; };
 		421FA87AF9592ACFD097C2A4 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 60F9986A196E75B6AEEDBD90 /* Utilities */; };
 		4918BE6974A36FB3BF11BC92 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 48FCE0AC313EFFC053C85A76 /* Domain */; };
-		4B742A83E6C7F31F03033FFA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88DD0A6A452C349A83EEFD16 /* ContentView.swift */; };
 		51678E3C9D0A077CEE553D3D /* CBTApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BADEE2E3185C9281230883C /* CBTApp.swift */; };
 		5AC72F573956CB9CD8EDC002 /* EvidenceTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65CC4639543644704371D6E /* EvidenceTestView.swift */; };
 		6A7FABDEE4AFAE2045B0F30F /* CBTAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E37869F06042DF00E94F5FBE /* CBTAppTests.swift */; };
+		76967596C642BFE862C126A2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109E66434E76097BF4B3A3BD /* HomeView.swift */; };
 		90D3A38FAE736A91C2E86091 /* Data in Frameworks */ = {isa = PBXBuildFile; productRef = C81CBC8015BD00F86C25EE1F /* Data */; };
+		95E442A7ED50C6582232B6DA /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB681459F8E5E61DC0215B8 /* HomeViewModel.swift */; };
+		AADC00C5CD917BC5CD6AD945 /* DebugMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EEB9D66976C54CCB19FB44 /* DebugMenuView.swift */; };
 		AC2C7C411EA9FF51FEBE84A2 /* VoiceTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4217A03D7F73016927F5431F /* VoiceTestView.swift */; };
-		AECF9132F13196752A754665 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = E4527E8AC35EA964D5598860 /* Utilities */; };
 		B04D7B2D3F1EB0D447C48E0B /* InterventionLibraryTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9071EDDC57AD38C8C5C9A546 /* InterventionLibraryTestView.swift */; };
 		CCDD17A963DC257B50C44B7A /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = F5D492A133F2C14BED7CEF60 /* Domain */; };
-		D2E01BFDC13B7489FCEDD182 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = FBD1F9525A856BF3BA84D1E2 /* DesignSystem */; };
+		D4FFF4EFE4F05797E4B50F45 /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023913308AC5211E28CC2B1E /* DependencyContainer.swift */; };
+		D7C80C22BB522234031154A0 /* IntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F48349C9018E588732B401 /* IntegrationTests.swift */; };
 		DF8427E14391C1C766AA9787 /* ProtocolEngineTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E9BFCC974D3CDB44B6165C /* ProtocolEngineTestView.swift */; };
 		E4D09783B0B34B23AFA5F5C3 /* Services in Frameworks */ = {isa = PBXBuildFile; productRef = 959B447E0EF6DB7A25C7E08C /* Services */; };
 		FBCF8664AA009B9851C0B3B9 /* ValidationTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B0F3A14E17BFE3665826699 /* ValidationTestView.swift */; };
@@ -43,16 +45,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		023913308AC5211E28CC2B1E /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		0535C4FCF2964B22FC638FE3 /* CBTAppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CBTAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		109E66434E76097BF4B3A3BD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		1BADEE2E3185C9281230883C /* CBTApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBTApp.swift; sourceTree = "<group>"; };
+		1DB681459F8E5E61DC0215B8 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		2B7BDBD956ED2DAA4A4504E5 /* WorkshopTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkshopTestView.swift; sourceTree = "<group>"; };
+		37EEB9D66976C54CCB19FB44 /* DebugMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugMenuView.swift; sourceTree = "<group>"; };
 		4217A03D7F73016927F5431F /* VoiceTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceTestView.swift; sourceTree = "<group>"; };
+		45F48349C9018E588732B401 /* IntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
 		4A7CE4D585756CC50EABEFE4 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DesignSystem; path = Packages/DesignSystem; sourceTree = SOURCE_ROOT; };
 		5DBF02960B831D1572739802 /* Features */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Features; path = Packages/Features; sourceTree = SOURCE_ROOT; };
 		6B0F3A14E17BFE3665826699 /* ValidationTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationTestView.swift; sourceTree = "<group>"; };
-		88DD0A6A452C349A83EEFD16 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9071EDDC57AD38C8C5C9A546 /* InterventionLibraryTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterventionLibraryTestView.swift; sourceTree = "<group>"; };
 		98E9BFCC974D3CDB44B6165C /* ProtocolEngineTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolEngineTestView.swift; sourceTree = "<group>"; };
+		A09AD67572C9096039B94EB9 /* ProtocolDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolDetailView.swift; sourceTree = "<group>"; };
 		B22066B466D6338A732ACE39 /* AgentTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentTestView.swift; sourceTree = "<group>"; };
 		B32BC5843DEAC045F69453A2 /* Services */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Services; path = Packages/Services; sourceTree = SOURCE_ROOT; };
 		B5A2AC6CD0BBD13673648607 /* SafetyTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyTestView.swift; sourceTree = "<group>"; };
@@ -71,10 +78,7 @@
 			files = (
 				CCDD17A963DC257B50C44B7A /* Domain in Frameworks */,
 				3C02F8CD679D766F0A79F8FC /* Data in Frameworks */,
-				389435B2DE121F75CE8C737D /* Services in Frameworks */,
-				D2E01BFDC13B7489FCEDD182 /* DesignSystem in Frameworks */,
-				081ED3201BAFBE3FF7C57D91 /* Features in Frameworks */,
-				AECF9132F13196752A754665 /* Utilities in Frameworks */,
+				389435B2DE121F75CE8C737D /* Utilities in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				E37869F06042DF00E94F5FBE /* CBTAppTests.swift */,
+				45F48349C9018E588732B401 /* IntegrationTests.swift */,
 			);
 			path = CBTAppTests;
 			sourceTree = "<group>";
@@ -130,9 +135,13 @@
 			children = (
 				B22066B466D6338A732ACE39 /* AgentTestView.swift */,
 				1BADEE2E3185C9281230883C /* CBTApp.swift */,
-				88DD0A6A452C349A83EEFD16 /* ContentView.swift */,
+				37EEB9D66976C54CCB19FB44 /* DebugMenuView.swift */,
+				023913308AC5211E28CC2B1E /* DependencyContainer.swift */,
 				B65CC4639543644704371D6E /* EvidenceTestView.swift */,
+				109E66434E76097BF4B3A3BD /* HomeView.swift */,
+				1DB681459F8E5E61DC0215B8 /* HomeViewModel.swift */,
 				9071EDDC57AD38C8C5C9A546 /* InterventionLibraryTestView.swift */,
+				A09AD67572C9096039B94EB9 /* ProtocolDetailView.swift */,
 				98E9BFCC974D3CDB44B6165C /* ProtocolEngineTestView.swift */,
 				B5A2AC6CD0BBD13673648607 /* SafetyTestView.swift */,
 				6B0F3A14E17BFE3665826699 /* ValidationTestView.swift */,
@@ -171,9 +180,6 @@
 			packageProductDependencies = (
 				F5D492A133F2C14BED7CEF60 /* Domain */,
 				039AF293332F5C8C12DEA82E /* Data */,
-				91C04A5666D98A717350B142 /* Services */,
-				FBD1F9525A856BF3BA84D1E2 /* DesignSystem */,
-				5623C494F00451DE642B71D7 /* Features */,
 				E4527E8AC35EA964D5598860 /* Utilities */,
 			);
 			productName = CBTAppTests;
@@ -247,9 +253,13 @@
 			files = (
 				141F3792AF415EB77873DE69 /* AgentTestView.swift in Sources */,
 				51678E3C9D0A077CEE553D3D /* CBTApp.swift in Sources */,
-				4B742A83E6C7F31F03033FFA /* ContentView.swift in Sources */,
+				AADC00C5CD917BC5CD6AD945 /* DebugMenuView.swift in Sources */,
+				D4FFF4EFE4F05797E4B50F45 /* DependencyContainer.swift in Sources */,
 				5AC72F573956CB9CD8EDC002 /* EvidenceTestView.swift in Sources */,
+				76967596C642BFE862C126A2 /* HomeView.swift in Sources */,
+				95E442A7ED50C6582232B6DA /* HomeViewModel.swift in Sources */,
 				B04D7B2D3F1EB0D447C48E0B /* InterventionLibraryTestView.swift in Sources */,
+				310BDAF980B88070FB937C9A /* ProtocolDetailView.swift in Sources */,
 				DF8427E14391C1C766AA9787 /* ProtocolEngineTestView.swift in Sources */,
 				096DB76A0AA5A5173B2CC96B /* SafetyTestView.swift in Sources */,
 				FBCF8664AA009B9851C0B3B9 /* ValidationTestView.swift in Sources */,
@@ -263,6 +273,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A7FABDEE4AFAE2045B0F30F /* CBTAppTests.swift in Sources */,
+				D7C80C22BB522234031154A0 /* IntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,6 +353,7 @@
 				DEVELOPMENT_TEAM = 5R2D4Y969H;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CBT;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "CBT uses Face ID to lock the app and protect your data.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CBT uses the microphone for voice-to-text input during protocol runs and workshop sessions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -470,6 +482,7 @@
 				DEVELOPMENT_TEAM = 5R2D4Y969H;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CBT;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "CBT uses Face ID to lock the app and protect your data.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "CBT uses the microphone for voice-to-text input during protocol runs and workshop sessions.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -560,17 +573,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Domain;
 		};
-		5623C494F00451DE642B71D7 /* Features */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Features;
-		};
 		60F9986A196E75B6AEEDBD90 /* Utilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Utilities;
-		};
-		91C04A5666D98A717350B142 /* Services */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Services;
 		};
 		959B447E0EF6DB7A25C7E08C /* Services */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -591,10 +596,6 @@
 		F5D492A133F2C14BED7CEF60 /* Domain */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Domain;
-		};
-		FBD1F9525A856BF3BA84D1E2 /* DesignSystem */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DesignSystem;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

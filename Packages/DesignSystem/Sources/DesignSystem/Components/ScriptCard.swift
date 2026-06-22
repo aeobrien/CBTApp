@@ -43,6 +43,9 @@ public struct ScriptCard: View {
             RoundedRectangle(cornerRadius: CBTSpacing.cardRadius)
                 .strokeBorder(CBTColors.accent.opacity(0.15), lineWidth: 1)
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(title)
+        .accessibilityValue(script)
     }
 }
 

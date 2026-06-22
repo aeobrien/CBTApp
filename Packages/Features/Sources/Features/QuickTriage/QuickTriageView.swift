@@ -3,11 +3,15 @@ import Domain
 import DesignSystem
 
 /// Quick Triage wizard — helps users find the right protocol when unsure.
-struct QuickTriageView: View {
+public struct QuickTriageView: View {
     @Bindable var viewModel: QuickTriageViewModel
     @Environment(\.dismiss) private var dismiss
 
-    var body: some View {
+    public init(viewModel: QuickTriageViewModel) {
+        self.viewModel = viewModel
+    }
+
+    public var body: some View {
         NavigationStack {
             VStack(spacing: CBTSpacing.lg) {
                 // Progress indicator

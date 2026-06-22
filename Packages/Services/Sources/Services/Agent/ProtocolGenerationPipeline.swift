@@ -1,6 +1,7 @@
 import Foundation
 import Domain
 import Utilities
+import os
 
 /// Generates a new CBT protocol via the LLM with automatic validation and repair.
 public actor ProtocolGenerationPipeline {
@@ -21,6 +22,9 @@ public actor ProtocolGenerationPipeline {
     ) async -> AgentResult {
         let systemPrompt = ConversationManager.buildGenerationSystemPrompt()
         var chatMessages = ConversationManager.toChatMessages(context.workshopMessages, systemPrompt: systemPrompt)
+
+        let signpostState = CBTSignpost.begin("GenerateProtocol")
+        defer { CBTSignpost.end("GenerateProtocol", signpostState) }
 
         logger.debug("Starting generation pipeline", correlationID: correlationID)
 

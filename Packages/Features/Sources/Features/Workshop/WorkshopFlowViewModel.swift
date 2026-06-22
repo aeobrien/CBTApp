@@ -1,6 +1,7 @@
 import Foundation
 import Domain
 import Utilities
+import os
 
 /// Drives the entire Workshop flow across 10 stages.
 ///
@@ -47,6 +48,12 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
 
     /// Per-stage conversation history.
     private var stageConversations: [WorkshopStage: [ConversationMessage]] = [:]
+
+    // MARK: - Stage 2 output: Recurrence
+
+    public var recurrenceTriggers: [String] = []
+    public var recurrenceFrequency: String = ""
+    public var recurrenceTimingPattern: String = ""
 
     // MARK: - Stage 3 output: Maintaining behaviours
 
@@ -135,6 +142,9 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
         if let firstThought = proto.hotThoughtTemplates.first {
             hotThought = firstThought
         }
+
+        // Stage 2 — map whenToUse as recurrence triggers for revision
+        recurrenceTriggers = proto.whenToUse
 
         // Stage 4
         confirmedTargetBelief = proto.targets.targetBelief
@@ -338,6 +348,9 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
     // MARK: - Stage 9: Generate Protocol
 
     public func generateProtocol() async {
+        let signpostState = CBTSignpost.begin("WorkshopGenerate")
+        defer { CBTSignpost.end("WorkshopGenerate", signpostState) }
+
         logger.info("Starting protocol generation", correlationID: correlationID)
         generationState = .generating
 
@@ -383,7 +396,10 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
             emotionIntensity: emotionIntensity,
             maintainingBehaviours: identifiedBehaviours,
             targetBelief: confirmedTargetBelief.isEmpty ? nil : confirmedTargetBelief,
-            selectedInterventionNames: selectedInterventions.map(\.name)
+            selectedInterventionNames: selectedInterventions.map(\.name),
+            recurrenceTriggers: recurrenceTriggers,
+            recurrenceFrequency: recurrenceFrequency.isEmpty ? nil : recurrenceFrequency,
+            recurrenceTimingPattern: recurrenceTimingPattern.isEmpty ? nil : recurrenceTimingPattern
         )
     }
 
@@ -419,6 +435,15 @@ public final class WorkshopFlowViewModel: WorkshopFlowViewModelProtocol {
         }
         if !confirmedTargetBelief.isEmpty {
             parts.append("Target belief: \(confirmedTargetBelief)")
+        }
+        if !recurrenceTriggers.isEmpty {
+            parts.append("Recurrence triggers: \(recurrenceTriggers.joined(separator: ", "))")
+        }
+        if !recurrenceFrequency.isEmpty {
+            parts.append("Recurrence frequency: \(recurrenceFrequency)")
+        }
+        if !recurrenceTimingPattern.isEmpty {
+            parts.append("Timing pattern: \(recurrenceTimingPattern)")
         }
         if !identifiedBehaviours.isEmpty {
             let behaviourNames = identifiedBehaviours.map(\.type.displayName)

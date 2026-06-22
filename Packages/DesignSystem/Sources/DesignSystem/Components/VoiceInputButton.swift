@@ -40,6 +40,7 @@ public struct VoiceInputButton: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(isRecording ? "Stop recording" : "Start voice input")
+        .accessibilityHint(isRecording ? "Stops recording and transcribes your speech" : "Records your speech and converts it to text")
     }
 }
 

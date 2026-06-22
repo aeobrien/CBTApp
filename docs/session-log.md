@@ -156,23 +156,76 @@
 - SafetyTestView test harness with quick-test buttons for all alert types
 - Manual test brief: `docs/manual-tests/phase-10-safety.md`
 
+## Session 4 — 2026-02-21
+
+### Phase 15: Integration, Polish, Full Flow Testing ✅
+- DependencyContainer: production (on-disk SwiftData + real services) and preview (in-memory + mocks)
+- HomeView + HomeViewModel: production home screen with protocol list, Start a Run, Build New, Quick Triage, Settings
+- ProtocolDetailView: dashboard wrapper with Run, Weekly Review, Revise, Measure Admin, Completion flows
+- CBTApp.swift rewired: DependencyContainer created once, onboarding → post-onboarding Workshop → HomeView
+- Auto-seeds SampleData into SwiftData on first launch (empty store)
+- Whisper model auto-prepares on launch
+- ContentView renamed to DebugMenuView, accessible via Debug button (#if DEBUG) in HomeView toolbar
+- QuickTriageView made public for app target access
+- CompletionCandidate made Identifiable for .sheet(item:) usage
+- Accessibility pass on 7 DesignSystem components: ProtocolCard, ScriptCard, OutcomeTagSelector, CBTChecklist, VoiceInputButton, SafetyBanner (hint), CBTTimer
+- 8 integration tests with in-memory SwiftData:
+  1. Protocol saved and loadable
+  2. Run saved and queryable (with DashboardStatsCalculator)
+  3. Protocol revision saves new version
+  4. Quick Triage finds matching protocol
+  5. Safety system escalation evaluation
+  6. Seed data populates empty store
+  7. Delete protocol cascades to runs
+  8. Measure scores persist and retrieve
+- Test target dependencies trimmed (removed Services/Features/DesignSystem to avoid WhisperKit linker issues)
+- Manual test brief: `docs/manual-tests/phase-15-integration.md` (6 end-to-end scenarios)
+- All package tests pass: Domain 112, Utilities 7, Data 8, DesignSystem 15, Services 75, Features 109
+- All app integration tests pass: 11 (3 existing + 8 new)
+- App builds successfully for iOS Simulator
+
+## Session 5 — 2026-03-01
+
+### Workshop Flow Improvements (post-Phase 15 polish)
+Three usability problems addressed from real-world Workshop usage:
+
+**Problem 1: AI chat stages loop indefinitely** — no clear endpoint, assumes CBT knowledge.
+- Added `introExplanation` and `goalDescription` computed properties to `WorkshopStage` for all 4 guided stages
+- Added `StageIntroCard` to `ConversationView` — shows at top of scroll, explains what the stage does and what "done" looks like
+- Added `COMPLETION` section to all 4 AI system prompts instructing the AI to summarise, nudge "tap Next", and stop asking questions
+
+**Problem 2: Stage 2 captures no structured output** — AI gathers recurrence insights but nothing is extracted.
+- Added `recurrenceTriggers: [String]`, `recurrenceFrequency: String?`, `recurrenceTimingPattern: String?` to `WorkshopContext`
+- Added matching properties to `WorkshopFlowViewModelProtocol` and `WorkshopFlowViewModel`
+- Removed inline `FormulationView` from `Stage2RecurrenceView`, replaced with structured capture section (trigger list with add/remove, frequency field, timing pattern field) appearing after ≥2 user messages
+- Wired recurrence data into `buildWorkshopContext()`, `buildStructuredSummary()`, `loadExistingProtocol()`
+- Injected recurrence context into downstream prompts (maintaining, targetBelief, experimentDesign)
+
+**Problem 3: Stage 3 BehaviourPickerSheet loses detail** — creates `MaintainingBehaviour` with empty `shortTermRelief`/`longTermCost`.
+- Revamped `BehaviourPickerSheet`: selecting a type now shows optional "Short-term relief" and "Long-term cost" text fields before adding
+- Updated behaviour list display to show relief/cost details when present
+
+**Files changed:**
+- `Domain/Workshop/WorkshopPrompts.swift` — WorkshopContext + 4 prompt methods
+- `Domain/Workshop/WorkshopStage.swift` — 2 new computed properties
+- `Domain/Protocols/WorkshopViewModelProtocol.swift` — 3 new recurrence properties
+- `Features/Workshop/WorkshopFlowViewModel.swift` — recurrence state + wiring
+- `Features/Workshop/Shared/ConversationView.swift` — StageIntroCard
+- `Features/Workshop/Stages/Stage2RecurrenceView.swift` — full rewrite
+- `Features/Workshop/Stages/Stage3MaintainingView.swift` — BehaviourPickerSheet revamp
+
+**New tests:**
+- Domain: WorkshopStageTests (5) — intro/goal non-nil for guided, nil for others
+- Domain: WorkshopPromptsTests (+8) — completion signals, recurrence context in downstream prompts
+- Features: WorkshopFlowViewModelTests (+3) — recurrence properties, generation summary, revision pre-fill
+- Total Domain: 112 (was 112, net +5 stage tests + 8 prompt tests, but swift-testing suite is separate)
+- Total Features: 116 (was 109 XCTest + 1 swift-testing, now 115 XCTest + 1 swift-testing)
+
+**Verification:** Domain 112 tests pass, Features 116 tests pass, app BUILD SUCCEEDED.
+
 ## Git State
 - `main` branch: Phase 0 only
 - `phase-1/domain-models`: Phase 0 + 1
 - `phase-2/design-system`: Phase 0 + 1 + 2
 - `phase-3/intervention-library`: Phase 0 + 1 + 2 + 3
-- `phase-4/protocol-engine`: Phase 0 + 1 + 2 + 3 + 4
-
-## Remaining Roadmap (Phases 5–15)
-See `/Users/aidan/Dev/CBT/ROADMAP.md` for full details:
-- Phase 5: Run Mode (6 screens)
-- Phase 6: Validation Pipeline
-- Phase 7: Agent Service (OpenAI GPT-5.2)
-- Phase 8: Evidence & Review
-- Phase 9: Workshop Mode
-- Phase 10: Safety & Escalation
-- Phase 11: Voice Input (Whisper)
-- Phase 12: Onboarding / Psychoeducation
-- Phase 13: Quick Triage
-- Phase 14: Settings, Export, Protocol Completion
-- Phase 15: Integration, Polish, Full Flow Testing
+- `phase-4/protocol-engine`: Phases 0–15 + Workshop improvements (all work on this branch)

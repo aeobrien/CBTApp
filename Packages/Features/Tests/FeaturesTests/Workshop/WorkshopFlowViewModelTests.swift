@@ -388,4 +388,43 @@ final class WorkshopFlowViewModelTests: XCTestCase {
 
         XCTAssertEqual(agent.lastRevisionProtocol?.id, originalID)
     }
+
+    // MARK: - Stage 2: Recurrence
+
+    func testRecurrencePropertiesInitiallyEmpty() {
+        let (vm, _, _) = makeSUT()
+        XCTAssertTrue(vm.recurrenceTriggers.isEmpty)
+        XCTAssertTrue(vm.recurrenceFrequency.isEmpty)
+        XCTAssertTrue(vm.recurrenceTimingPattern.isEmpty)
+    }
+
+    func testRecurrenceDataIncludedInGenerationSummary() async {
+        let agent = MockAgentService()
+        let (vm, _, _) = makeSUT(agent: agent)
+
+        vm.recurrenceTriggers = ["morning meetings", "deadlines"]
+        vm.recurrenceFrequency = "3 times a week"
+        vm.recurrenceTimingPattern = "weekday mornings"
+
+        await vm.generateProtocol()
+
+        let context = agent.lastGenerationContext
+        XCTAssertNotNil(context)
+        let summaryMessage = context!.workshopMessages.last?.content ?? ""
+        XCTAssertTrue(summaryMessage.contains("morning meetings"))
+        XCTAssertTrue(summaryMessage.contains("3 times a week"))
+        XCTAssertTrue(summaryMessage.contains("weekday mornings"))
+    }
+
+    func testRevisionPreFillsRecurrenceTriggers() {
+        let proto = CBTProtocol(
+            name: "Existing",
+            summary: "Revise me",
+            whenToUse: ["Before presentations", "Monday mornings"]
+        )
+        let (vm, _, _) = makeSUT(existingProtocol: proto)
+        vm.loadExistingProtocol()
+
+        XCTAssertEqual(vm.recurrenceTriggers, ["Before presentations", "Monday mornings"])
+    }
 }

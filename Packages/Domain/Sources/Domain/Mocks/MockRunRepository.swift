@@ -39,6 +39,10 @@ public actor MockRunRepository: RunRepositoryProtocol {
         runs.removeValue(forKey: id)
     }
 
+    public func deleteAllRuns() async throws {
+        runs.removeAll()
+    }
+
     public func deleteRuns(forProtocolID protocolID: UUID) async throws {
         runs = runs.filter { $0.value.protocolID != protocolID }
     }

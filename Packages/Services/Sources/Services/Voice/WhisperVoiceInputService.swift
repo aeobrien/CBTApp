@@ -2,6 +2,7 @@ import Foundation
 import Domain
 import Utilities
 import WhisperKit
+import os
 
 #if canImport(AVFoundation)
 import AVFoundation
@@ -183,6 +184,8 @@ public final class WhisperVoiceInputService: VoiceInputServiceProtocol, @uncheck
         logger.info("[PRE-TRANSCRIBE] tokenizer=\(whisperKit.tokenizer == nil ? "nil" : "loaded")")
 
         do {
+            let signpostState = CBTSignpost.begin("Transcribe")
+
             let options = DecodingOptions(
                 language: "en",
                 temperature: 0.0,
@@ -196,6 +199,8 @@ public final class WhisperVoiceInputService: VoiceInputServiceProtocol, @uncheck
                 audioPath: recordingURL.path,
                 decodeOptions: options
             )
+
+            CBTSignpost.end("Transcribe", signpostState)
 
             let text = results.map(\.text).joined(separator: " ").trimmingCharacters(in: .whitespacesAndNewlines)
             state = .result(text)

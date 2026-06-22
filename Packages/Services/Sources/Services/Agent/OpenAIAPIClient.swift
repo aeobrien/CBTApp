@@ -1,5 +1,6 @@
 import Foundation
 import Utilities
+import os
 
 /// Protocol for URL session abstraction, enabling test injection.
 public protocol URLSessionProtocol: Sendable {
@@ -64,6 +65,9 @@ public actor OpenAIAPIClient {
         )
 
         let urlRequest = try buildURLRequest(body: request, apiKey: apiKey)
+
+        let signpostState = CBTSignpost.begin("APIRequest")
+        defer { CBTSignpost.end("APIRequest", signpostState) }
 
         logger.debug("Sending chat completion (\(messages.count) messages, jsonMode=\(jsonMode))",
                      correlationID: correlationID)
