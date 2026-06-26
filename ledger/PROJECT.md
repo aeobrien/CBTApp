@@ -4,6 +4,7 @@
 
 ## Status
 
+**Lane:** personal
 **Phase:** Idea / Pre-development
 **Last updated:** 2026-04-07
 
