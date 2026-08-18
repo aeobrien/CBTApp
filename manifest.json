@@ -1,0 +1,23 @@
+{
+  "capture_finished_at_utc": "2026-08-18T02:18:03Z",
+  "capture_started_at_utc": "2026-08-18T02:18:00Z",
+  "captured_at_utc": "2026-08-18T02:18:00Z",
+  "captured_byte_estimate": 1206722,
+  "captured_path_count": 253,
+  "consistency_retry_count": 0,
+  "excluded": [],
+  "github_hard_limit_bytes": 100000000,
+  "guardian_version": "2.0-sidecar",
+  "head_state": "symbolic",
+  "host": "aidans-laptop",
+  "racy_capture": false,
+  "repository_id": "CBT-cb019758e2df",
+  "schema_version": 1,
+  "snapshot_blob_threshold_bytes": 94371840,
+  "snapshot_consistency": "stable",
+  "source_branch": "phase-4/protocol-engine",
+  "source_head_oid": "33976416ecc66364b4b0252e33d66db3c0f85733",
+  "source_index_sha256": "f6e57a8b5d32ed690f0fca7b3a053e47e9daf74645c09a54ccc3aaf6f1ffa2e5",
+  "source_path": "/Users/aidan/Dev/CBT",
+  "upstream_observed": "origin/phase-4/protocol-engine"
+}
