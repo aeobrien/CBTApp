@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:addyosmani.com)",
+      "WebFetch(domain:nimblehq.co)",
+      "WebFetch(domain:harper.blog)",
+      "WebFetch(domain:blog.sshh.io)",
+      "WebFetch(domain:www.infoq.com)",
+      "Bash(swift:*)",
+      "Bash(xcode-select:*)",
+      "Bash(xcodegen generate:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(git remote add:*)",
+      "WebFetch(domain:platform.openai.com)",
+      "WebFetch(domain:docs.aimlapi.com)",
+      "WebFetch(domain:evolink.ai)",
+      "Bash(for f in /Users/aidan/Dev/CBT/Packages/Features/Sources/Features/Workshop/Stages/*.swift /Users/aidan/Dev/CBT/Packages/Features/Sources/Features/Workshop/WorkshopFlowCoordinator.swift)",
+      "Bash(do sed -i '' '/\\\\.navigationBarTitleDisplayMode\\(\\\\.inline\\)/d' \"$f\")",
+      "Bash(done)",
+      "Bash(echo:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(find:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:app.argmaxinc.com)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:swiftpackageindex.com)",
+      "WebFetch(domain:uithub.com)",
+      "WebFetch(domain:transloadit.com)",
+      "Bash(grep:*)",
+      "Bash(cd /Users/aidan/Dev/CBT && rm -rf CBTApp.xcodeproj && xcodegen generate --spec project.yml 2>&1)"
+    ]
+  }
+}
