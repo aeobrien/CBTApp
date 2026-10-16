@@ -1,0 +1,214 @@
+project_shape:
+  scale: multi-subsystem
+  has_subsystem_layer: false
+  expected_modules: "14-16"
+  kind: product
+
+modules:
+  - id: mentalhealthtoolkit.app-platform.app-shell
+    project: MentalHealthToolkit
+    subsystem: App Platform
+    name: App shell and dependency wiring
+    capability: Boots the app, wires repositories and services, gates onboarding and lock state, and routes users into the main flows.
+    status: working
+    approach: Uses a SwiftUI `App` entrypoint, a central `DependencyContainer`, `@AppStorage`, and view coordinators with protocol-backed DI.
+    tech: [SwiftUI, SwiftData, AppStorage, LocalAuthentication, SPM]
+    io: { in: "app launch, scene phase changes, stored preferences", out: "root screens with live dependencies and modal flow routing" }
+    code_refs: [CBTApp/Sources/CBTApp.swift, CBTApp/Sources/DependencyContainer.swift, CBTApp/Sources/HomeView.swift]
+    known_gaps: []
+    match_keywords: [ios app shell, dependency injection, coordinator routing, swiftui app lifecycle]
+
+  - id: mentalhealthtoolkit.app-platform.onboarding
+    project: MentalHealthToolkit
+    subsystem: App Platform
+    name: Onboarding flow
+    capability: Walks a new user through the introductory screens and hands off to the protocol-building flow.
+    status: working
+    approach: Implements a lightweight `@Observable` SwiftUI flow model with ordered screens and a completion callback.
+    tech: [SwiftUI, Observation, AppStorage]
+    io: { in: "first-launch state and user navigation actions", out: "onboarding completion signal and screen navigation state" }
+    code_refs: [Packages/Domain/Sources/Domain/Onboarding/OnboardingScreen.swift, Packages/Features/Sources/Features/Onboarding/*.swift]
+    known_gaps: ["Progress is only kept in memory during the flow; there is no resumeable draft state if the app closes mid-onboarding."]
+    match_keywords: [user onboarding, welcome flow, first-run experience, swiftui onboarding]
+
+  - id: mentalhealthtoolkit.app-platform.settings-lifecycle
+    project: MentalHealthToolkit
+    subsystem: App Platform
+    name: Settings and protocol lifecycle admin
+    capability: Manages API key storage, appearance and lock preferences, protocol export-import, and protocol archive-delete actions.
+    status: working
+    approach: Uses a Settings view model over repositories plus `UserDefaults`, `Keychain`, `JSONEncoder` and `LocalAuthentication`.
+    tech: [SwiftUI, UserDefaults, Keychain, JSONEncoder, JSONDecoder, LocalAuthentication]
+    io: { in: "user settings actions, protocol JSON files, repository data", out: "saved preferences, exported protocol blobs, imported or archived protocols" }
+    code_refs: [Packages/Features/Sources/Features/Settings/*.swift, Packages/Services/Sources/Services/Agent/KeychainHelper.swift]
+    known_gaps: ["Export and import cover protocols only; runs, measure scores, and other user state are not included.", "The `Reset All Run Data` action permanently deletes run history and metrics with no automatic backup step or export-first prompt."]
+    match_keywords: [settings, preferences, keychain api key, import export, protocol management]
+
+  - id: mentalhealthtoolkit.app-platform.design-system
+    project: MentalHealthToolkit
+    subsystem: App Platform
+    name: Design system
+    capability: Provides the shared UI tokens and reusable controls used across the app's therapy flows.
+    status: working
+    approach: Ships a local Swift package of SwiftUI tokens and components bound to domain model types where needed.
+    tech: [SwiftUI, SPM]
+    io: { in: "view state and domain-backed component props", out: "styled reusable UI elements and design tokens" }
+    code_refs: [Packages/DesignSystem/Sources/DesignSystem/**/*.swift]
+    known_gaps: []
+    match_keywords: [design system, ui kit, design tokens, reusable components, swiftui components]
+
+  - id: mentalhealthtoolkit.protocol-authoring.workshop-formulation
+    project: MentalHealthToolkit
+    subsystem: Protocol Authoring
+    name: Workshop formulation flow
+    capability: Collects structured therapy inputs across the workshop stages and progressively builds a CBT formulation and protocol draft context.
+    status: working
+    approach: Uses a single `@Observable` stage-driven view model with per-stage conversation history and pure-domain formulation builders.
+    tech: [SwiftUI, Observation, FormulationBuilder, WorkshopStage, AgentServiceProtocol]
+    io: { in: "captured situations, emotions, urges, guided-discovery messages, intervention selections", out: "formulation state, generation context, and a completed protocol draft request" }
+    code_refs: [Packages/Features/Sources/Features/Workshop/**/*.swift, Packages/Domain/Sources/Domain/Workshop/*.swift, Packages/Domain/Sources/Domain/Workshop/FormulationBuilder.swift]
+    known_gaps: ["Workshop progress is held in memory inside one view model; there is no draft persistence or resume flow across launches."]
+    match_keywords: [guided protocol builder, cbt formulation, multi-step wizard, conversational authoring]
+
+  - id: mentalhealthtoolkit.protocol-authoring.ai-protocol-generation
+    project: MentalHealthToolkit
+    subsystem: Protocol Authoring
+    name: AI protocol generation and revision
+    capability: Turns workshop context into full CBT protocol JSON and revises existing protocols through LLM calls with repair retries.
+    status: working
+    approach: Calls OpenAI chat completions over direct REST, builds large system prompts from schema and library state, then decodes and repairs JSON until validation passes or retries are exhausted.
+    tech: [OpenAI Chat Completions API, URLSession, JSONDecoder, gpt-5.2, Keychain]
+    io: { in: "workshop conversation history, revision context, API key", out: "validated `CBTProtocol` objects or structured agent errors" }
+    code_refs: [Packages/Services/Sources/Services/Agent/OpenAIAgentService.swift, Packages/Services/Sources/Services/Agent/OpenAIAPIClient.swift, Packages/Services/Sources/Services/Agent/ProtocolGenerationPipeline.swift, Packages/Services/Sources/Services/Agent/ProtocolPatchPipeline.swift, Packages/Services/Sources/Services/Agent/ConversationManager.swift]
+    known_gaps: ["The client is hard-wired to `/v1/chat/completions` with a fixed default model (`gpt-5.2`).", "There is no streaming, tool-calling, or alternate provider path in the current service layer."]
+    match_keywords: [llm protocol generation, json repair loop, prompt orchestration, openai rest client, ai-assisted authoring]
+
+  - id: mentalhealthtoolkit.protocol-authoring.protocol-validation
+    project: MentalHealthToolkit
+    subsystem: Protocol Authoring
+    name: Protocol validation pipeline
+    capability: Validates generated or revised protocols for schema correctness, internal constraints, and content policy compliance.
+    status: working
+    approach: Runs a composed validation pass over schema, constraint, and content-policy validators and returns structured errors for repair prompts.
+    tech: [ValidationPipeline, SchemaValidator, ConstraintValidator, ContentPolicyValidator]
+    io: { in: "candidate `CBTProtocol` objects", out: "validation result with field-level errors" }
+    code_refs: [Packages/Services/Sources/Services/Validation/*.swift]
+    known_gaps: ["Validation enforces structure and rule checks, but it does not score therapeutic quality or evidence fit beyond the encoded rules."]
+    match_keywords: [schema validation, content policy validation, structured error reporting, rule-based validator]
+
+  - id: mentalhealthtoolkit.guided-support.intervention-library
+    project: MentalHealthToolkit
+    subsystem: Guided Support
+    name: Intervention library and parameterisation
+    capability: Stores the curated intervention templates, filters them for the current state, and turns a template into a user-specific intervention instance.
+    status: partial
+    approach: Uses a hard-coded intervention catalog with selector heuristics, ACT-boundary ordering, and placeholder substitution with script truncation.
+    tech: [InterventionLibrary, InterventionSelector, InterventionParameteriser]
+    io: { in: "run context, target loop hints, contraindication filters", out: "ranked intervention templates and parameterised intervention instances" }
+    code_refs: [Packages/Domain/Sources/Domain/InterventionLibrary/*.swift]
+    known_gaps: ["The library currently contains 9 templates, while `ledger/PROJECT.md` describes a broader 27-technique target scope."]
+    match_keywords: [curated intervention library, intervention ranking, template parameterization, cbt skills library]
+
+  - id: mentalhealthtoolkit.guided-support.run-engine
+    project: MentalHealthToolkit
+    subsystem: Guided Support
+    name: Run-mode execution engine
+    capability: Drives live protocol runs by capturing state, recommending interventions, evaluating review rules, and persisting run outcomes.
+    status: working
+    approach: Combines a stage-based run flow view model with `ProtocolEngine`, `JITAIEngine`, review rule evaluation, and repository saves.
+    tech: [SwiftUI, Observation, ProtocolEngine, JITAIEngine, ReviewRuleEvaluator, SwiftData]
+    io: { in: "selected protocol, run capture data, user outcomes", out: "intervention recommendations, completed runs, summaries, and rule evaluations" }
+    code_refs: [Packages/Features/Sources/Features/RunMode/**/*.swift, Packages/Domain/Sources/Domain/Engine/*.swift, Packages/Domain/Sources/Domain/RunMode/*.swift]
+    known_gaps: []
+    match_keywords: [just-in-time intervention, protocol runner, stateful workflow engine, cbt run mode]
+
+  - id: mentalhealthtoolkit.guided-support.quick-triage
+    project: MentalHealthToolkit
+    subsystem: Guided Support
+    name: Quick triage matcher
+    capability: Matches a user's current urge and theme to the most relevant existing protocols in a short wizard.
+    status: partial
+    approach: Uses a four-step SwiftUI flow and a rule-based scorer that maps urges and target loops to simple theme and tag matches.
+    tech: [SwiftUI, Observation, TriageMatcher, TriageAnswers]
+    io: { in: "urge, theme, intensity, active protocols", out: "ranked protocol matches or a build-new handoff" }
+    code_refs: [Packages/Features/Sources/Features/QuickTriage/*.swift, Packages/Domain/Sources/Domain/QuickTriage/*.swift]
+    known_gaps: ["Matching is heuristic and protocol-based only; the conversational AI triage described in `ledger/PROJECT.md` is not implemented here."]
+    match_keywords: [triage wizard, protocol matching, heuristic recommendation, symptom routing]
+
+  - id: mentalhealthtoolkit.guided-support.safety-monitoring
+    project: MentalHealthToolkit
+    subsystem: Guided Support
+    name: Safety monitoring and escalation
+    capability: Scans text and longitudinal usage data for acute risk, chronic non-response, disengagement, and compulsive use patterns.
+    status: working
+    approach: Composes local classifier and detector utilities behind a single `SafetySystemProtocol` used by flows and evidence screens.
+    tech: [SafetySystem, AcuteRiskClassifier, EscalationEvaluator, DisengagementDetector, CompulsiveUseDetector]
+    io: { in: "free text, run histories, measure scores, current time", out: "safety alerts with escalation guidance" }
+    code_refs: [Packages/Services/Sources/Services/Safety/*.swift, Packages/Domain/Sources/Domain/Safety/*.swift]
+    known_gaps: ["The current implementation is local and rule-based; it does not provide continuous background monitoring or external escalation integrations."]
+    match_keywords: [risk detection, escalation engine, safety rules, crisis screening, disengagement detection]
+
+  - id: mentalhealthtoolkit.guided-support.voice-input
+    project: MentalHealthToolkit
+    subsystem: Guided Support
+    name: Voice transcription input
+    capability: Records short audio clips and transcribes them into text for workshop and run-mode fields.
+    status: partial
+    approach: Uses `AVAudioRecorder` for capture and WhisperKit for on-device transcription, with explicit model preparation and diagnostic logging.
+    tech: [WhisperKit, AVFoundation, AVAudioRecorder, AVAudioSession]
+    io: { in: "microphone audio and model-preparation requests", out: "transcribed text, model status, and transcription state" }
+    code_refs: [Packages/Services/Sources/Services/Voice/WhisperVoiceInputService.swift, Packages/Domain/Sources/Domain/Voice/*.swift, Packages/Features/Sources/Features/VoiceInput/*.swift]
+    known_gaps: ["Recording is unavailable on macOS in the current implementation.", "The service is file-based and non-streaming; there is no live partial transcription path."]
+    match_keywords: [speech to text, on-device transcription, whisper, voice notes, dictated input]
+
+  - id: mentalhealthtoolkit.progress-tracking.persistence
+    project: MentalHealthToolkit
+    subsystem: Progress Tracking
+    name: SwiftData persistence layer
+    capability: Persists protocols, runs, and measure scores and exposes repository APIs to the rest of the app.
+    status: working
+    approach: Uses SwiftData `ModelContainer` storage with `@ModelActor` repositories and persisted-model to domain-model translation.
+    tech: [SwiftData, ModelContainer, ModelActor, FetchDescriptor]
+    io: { in: "domain protocols, runs, measure scores, repository queries", out: "stored records and fetched domain objects" }
+    code_refs: [Packages/Data/Sources/Data/**/*.swift]
+    known_gaps: ["The container setup is minimal and local-only; there is no visible migration policy or sync layer."]
+    match_keywords: [swiftdata repository, local persistence, model actor storage, offline data layer]
+
+  - id: mentalhealthtoolkit.progress-tracking.evidence-dashboard
+    project: MentalHealthToolkit
+    subsystem: Progress Tracking
+    name: Evidence dashboard and completion scoring
+    capability: Aggregates run history into protocol-level stats and evaluates whether a protocol is ready for completion.
+    status: working
+    approach: Loads per-protocol runs and measures, computes summary statistics in pure domain calculators, and surfaces completion suggestions in a dedicated view model.
+    tech: [DashboardStatsCalculator, CompletionDetector, SwiftData, SwiftUI]
+    io: { in: "protocol-specific runs and measure histories", out: "dashboard stats, completion candidate state, and measure trend bundles" }
+    code_refs: [Packages/Domain/Sources/Domain/Evidence/CompletionDetector.swift, Packages/Domain/Sources/Domain/Evidence/DashboardStats.swift, Packages/Features/Sources/Features/Evidence/Dashboard/*.swift, Packages/Features/Sources/Features/Evidence/Completion/*.swift]
+    known_gaps: ["Analytics are protocol-local; there is no cross-protocol or longitudinal portfolio view beyond one protocol at a time."]
+    match_keywords: [progress dashboard, outcome tracking, completion detection, recovery metrics, protocol analytics]
+
+  - id: mentalhealthtoolkit.progress-tracking.weekly-review
+    project: MentalHealthToolkit
+    subsystem: Progress Tracking
+    name: Weekly review insights
+    capability: Generates a small set of weekly insight cards from recent runs and measure changes.
+    status: working
+    approach: Applies heuristic weekly-window comparisons and priority-ranked insight generation before rendering them in a review screen.
+    tech: [WeeklyReviewGenerator, InsightCard, Calendar, SwiftUI]
+    io: { in: "recent runs, measure score histories, protocol metadata", out: "up to five ranked review insights" }
+    code_refs: [Packages/Domain/Sources/Domain/Evidence/InsightCard.swift, Packages/Features/Sources/Features/Evidence/Review/*.swift]
+    known_gaps: ["Insight generation is heuristic and capped at five cards, with fixed 7-day and 14-day comparison windows."]
+    match_keywords: [weekly review, behavioral insights, progress reflection, trend cards, therapy analytics]
+
+  - id: mentalhealthtoolkit.progress-tracking.measure-administration
+    project: MentalHealthToolkit
+    subsystem: Progress Tracking
+    name: Standardised measure administration
+    capability: Administers questionnaire measures, scores responses, and stores the results for later review.
+    status: working
+    approach: Uses local measure definitions and a linear questionnaire view model that compares the latest score with prior saved results.
+    tech: [MeasureDefinition, MeasureScore, SwiftData, SwiftUI]
+    io: { in: "questionnaire item responses and prior measure history", out: "total scores, scoring bands, and saved measure records" }
+    code_refs: [Packages/Domain/Sources/Domain/Evidence/MeasureDefinition.swift, Packages/Features/Sources/Features/Evidence/Measures/*.swift, Packages/Data/Sources/Data/Repositories/SwiftDataMeasureRepository.swift]
+    known_gaps: ["The module handles administration and storage, but there is no reminder or scheduling workflow beyond measure due checks on protocols."]
+    match_keywords: [questionnaire scoring, standardized measures, gad-7 style assessment, symptom scales]
