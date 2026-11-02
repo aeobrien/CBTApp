@@ -1,0 +1,87 @@
+name: CBTApp
+options:
+  bundleIdPrefix: com.cbt
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: true
+
+packages:
+  Domain:
+    path: Packages/Domain
+  Data:
+    path: Packages/Data
+  Services:
+    path: Packages/Services
+  DesignSystem:
+    path: Packages/DesignSystem
+  Features:
+    path: Packages/Features
+  Utilities:
+    path: Packages/Utilities
+
+targets:
+  CBTApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: CBTApp/Sources
+    resources:
+      - path: CBTApp/Resources
+    dependencies:
+      - package: Domain
+      - package: Data
+      - package: Services
+      - package: DesignSystem
+      - package: Features
+      - package: Utilities
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_CFBundleDisplayName: "CBT"
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "CBT uses the microphone for voice-to-text input during protocol runs and workshop sessions."
+        INFOPLIST_KEY_NSFaceIDUsageDescription: "CBT uses Face ID to lock the app and protect your data."
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.cbt.app
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: 1
+
+  CBTAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: CBTAppTests
+        optional: true
+    dependencies:
+      - target: CBTApp
+      - package: Domain
+        product: Domain
+      - package: Data
+        product: Data
+      - package: Utilities
+        product: Utilities
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: YES
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/CBTApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CBTApp"
+
+schemes:
+  CBTApp:
+    build:
+      targets:
+        CBTApp: all
+        CBTAppTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - CBTAppTests
